@@ -119,3 +119,41 @@ Use GitHub MCP for:
 - Checking issue context before implementation
 
 All major features should start from a GitHub issue.
+
+## UI Testing Rules
+
+Before marking a feature complete:
+
+- Verify using Playwright MCP
+- Validate forms
+- Validate navigation
+- Validate responsive layout
+- Check console errors
+
+Generate E2E tests when appropriate.
+
+## QA Workflow
+
+Developer Agent
+→ Implement Feature
+
+Playwright MCP
+→ Verify UI
+
+QA Agent
+→ Review Acceptance Criteria
+
+Reviewer Agent
+→ Final Review
+
+## UI Generation Rules
+
+Use Magic UI MCP when creating:
+- Landing pages
+- Dashboard layouts
+- Empty states
+- Cards
+- Hero sections
+- Modern UI interactions
+
+Keep UI clean, professional, and suitable for a developer productivity tool.
