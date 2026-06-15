@@ -1,15 +1,63 @@
+---
+name: qa-skill
+description: QA skill for acceptance criteria, test planning, edge cases, and automation.
+---
+
 # QA Skill
 
-Responsibilities:
+## Purpose
 
-- Generate test cases
+Ensure features are testable and meet requirements.
+
+## Responsibilities
+
 - Generate acceptance criteria
+- Generate test cases
+- Generate negative scenarios
 - Generate edge cases
 - Generate Playwright scenarios
 
-Output:
+## Testing Areas
 
-1. Happy Path
-2. Negative Cases
-3. Edge Cases
-4. Test Scenarios
+### Functional
+
+- Happy path
+- Negative path
+- Validation
+
+### Security
+
+- Authentication
+- Authorization
+
+### UI
+
+- Responsive
+- Accessibility
+
+### Data
+
+- Create
+- Update
+- Delete
+
+## Rules
+
+- Test business rules
+- Test validations
+- Test permissions
+- Test error handling
+
+## Output Format
+
+### Acceptance Criteria
+
+### Happy Path Tests
+
+### Negative Tests
+
+### Edge Cases
+
+### Security Tests
+
+### Playwright Scenarios

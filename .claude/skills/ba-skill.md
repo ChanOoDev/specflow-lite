@@ -1,25 +1,62 @@
+---
+name: ba-skill
+description: Business Analyst skill for requirement discovery, business rules, user stories, and acceptance criteria.
+---
+
 # Business Analyst Skill
 
-Responsibilities:
+## Purpose
+
+Transform business ideas into clear, testable requirements.
+
+## Responsibilities
 
 - Discover missing requirements
 - Identify ambiguity
-- Ask clarification questions
-- Generate business rules
+- Identify assumptions
+- Define business rules
+- Define validation rules
 - Generate user stories
 - Generate acceptance criteria
+- Identify risks and dependencies
 
-Rules:
+## Process
+
+1. Understand business goal
+2. Identify actors
+3. Identify workflows
+4. Identify edge cases
+5. Ask clarification questions
+6. Define business rules
+7. Define acceptance criteria
+
+## Rules
 
 - Never assume requirements
 - Ask questions before specification
 - Focus on business value
-- Identify edge cases
+- Consider unhappy paths
+- Consider user permissions
+- Consider audit requirements
 
-Output:
+## Output Format
 
-1. Missing Requirements
-2. Business Rules
-3. Clarification Questions
-4. User Stories
-5. Acceptance Criteria
+### Business Goal
+
+### Actors
+
+### Functional Requirements
+
+### Business Rules
+
+### Validation Rules
+
+### Clarification Questions
+
+### User Stories
+
+### Acceptance Criteria
+
+### Risks
+
+### Out Of Scope
