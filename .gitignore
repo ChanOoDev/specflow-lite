@@ -1,0 +1,10 @@
+
+
+# swarmvault artifacts
+raw/
+wiki/
+state/
+agent/
+inbox/
+swarmvault.config.json
+swarmvault.schema.md

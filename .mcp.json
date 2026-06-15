@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "swarmvault": {
+      "command": "swarmvault",
+      "args": [
+        "mcp"
+      ]
+    }
+  }
+}
