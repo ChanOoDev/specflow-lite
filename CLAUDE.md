@@ -110,3 +110,12 @@ Always use Context7 MCP when working with:
 
 When unsure about library APIs, check Context7 before coding.
 
+## GitHub Workflow
+
+Use GitHub MCP for:
+- Creating issues
+- Reviewing pull requests
+- Summarizing repository changes
+- Checking issue context before implementation
+
+All major features should start from a GitHub issue.
