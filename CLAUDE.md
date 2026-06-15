@@ -157,3 +157,16 @@ Use Magic UI MCP when creating:
 - Modern UI interactions
 
 Keep UI clean, professional, and suitable for a developer productivity tool.
+
+## Planning Rules
+
+Use Sequential Thinking MCP for:
+
+- Requirement analysis
+- Architecture design
+- Database design
+- Task breakdown
+- Complex debugging
+- Feature planning
+
+Prefer explicit reasoning before implementation.
