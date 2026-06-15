@@ -96,3 +96,17 @@ Use conventional commits:
 For architecture, structure, where-is, what-calls, or impact questions, query the graph first: `swarmvault graph query "<seed>"` (top matches + inline page excerpt), `swarmvault graph explain "<node>"`, or `swarmvault graph blast <target>` for impact. Avoid `--json` — the plain output is far smaller. Trust the graph answer for orientation; read source files only when you are editing them or the graph lacks the detail you need. Check freshness with `swarmvault graph status` and refresh with `swarmvault graph update` (add `--file <path>` for single files).
 <!-- swarmvault:managed:end -->
 
+
+## MCP Rules
+
+Always use Context7 MCP when working with:
+- Next.js
+- Supabase
+- Mantine UI
+- TanStack Query
+- Playwright
+- TypeScript setup
+- Library configuration
+
+When unsure about library APIs, check Context7 before coding.
+
