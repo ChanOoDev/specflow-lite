@@ -15,6 +15,7 @@ import {
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { useRequirement } from '@/lib/hooks/use-requirement';
 import { useDeleteRequirement } from '@/lib/hooks/use-requirement-mutations';
+import { useProject } from '@/lib/hooks/use-project';
 import { RequirementDetail } from '@/app/components/requirements/requirement-detail';
 import { RequirementDeleteConfirm } from '@/app/components/requirements/requirement-delete-confirm';
 import { useState } from 'react';
@@ -29,8 +30,11 @@ export default function RequirementDetailPage() {
     projectId,
     requirementId
   );
+  const { data: project } = useProject(projectId);
   const deleteMutation = useDeleteRequirement(projectId);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const isArchived = project?.status === 'archived';
 
   if (isLoading) {
     return (
@@ -68,8 +72,6 @@ export default function RequirementDetailPage() {
       </Container>
     );
   }
-
-  const isArchived = false; // Project archived status not needed at detail level
 
   return (
     <Container size="md" py="md">

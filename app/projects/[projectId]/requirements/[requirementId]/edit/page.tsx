@@ -15,6 +15,7 @@ import {
 import { RequirementForm } from '@/app/components/requirements/requirement-form';
 import { useRequirement } from '@/lib/hooks/use-requirement';
 import { useUpdateRequirement } from '@/lib/hooks/use-requirement-mutations';
+import { useProject } from '@/lib/hooks/use-project';
 import { ALLOWED_TRANSITIONS } from '@/lib/constants/requirement';
 
 export default function EditRequirementPage() {
@@ -28,8 +29,11 @@ export default function EditRequirementPage() {
     projectId,
     requirementId
   );
+  const { data: project } = useProject(projectId);
 
   const updateMutation = useUpdateRequirement(projectId, requirementId);
+
+  const isArchived = project?.status === 'archived';
 
   if (isLoading) {
     return (
@@ -65,6 +69,33 @@ export default function EditRequirementPage() {
                 }
               >
                 Back to Requirements
+              </Button>
+            </Stack>
+          </Center>
+        </Paper>
+      </Container>
+    );
+  }
+
+  if (isArchived) {
+    return (
+      <Container size="sm" py="xl">
+        <Paper radius="md" p="xl" withBorder>
+          <Center>
+            <Stack align="center">
+              <Title order={3}>Project Archived</Title>
+              <Text c="dimmed">
+                This project is archived and its requirements are read-only.
+              </Text>
+              <Button
+                variant="subtle"
+                onClick={() =>
+                  router.push(
+                    `/projects/${projectId}/requirements/${requirementId}`
+                  )
+                }
+              >
+                Back to Requirement
               </Button>
             </Stack>
           </Center>
