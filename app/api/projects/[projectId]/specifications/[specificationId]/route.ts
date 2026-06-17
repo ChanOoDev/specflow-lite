@@ -47,7 +47,7 @@ export async function GET(
     return NextResponse.json({ error: 'NOT_FOUND' }, { status: 404 });
   }
 
-  // Fetch linked requirements
+  // Fetch linked requirements (exclude soft-deleted requirements)
   const { data: junctionRows } = await supabase
     .from('specification_requirements')
     .select(
@@ -57,7 +57,8 @@ export async function GET(
         title,
         type,
         priority,
-        status
+        status,
+        deleted_at
       )
     `
     )
@@ -67,6 +68,8 @@ export async function GET(
     .map((row: Record<string, unknown>) => {
       const req = row.requirement as Record<string, unknown> | null;
       if (!req) return null;
+      // Skip soft-deleted requirements
+      if (req.deleted_at != null) return null;
       return {
         id: req.id as string,
         title: req.title as string,
@@ -224,21 +227,47 @@ export async function PATCH(
         .in('requirement_id', toRemove);
     }
 
-    // Add new links
+    // Add new links (FR-005: verify same project)
     if (toAdd.length > 0) {
-      const junctionRows = toAdd.map((reqId) => ({
-        specification_id: specificationId,
-        requirement_id: reqId,
-        owner_id: user.id,
-      }));
+      const { data: validReqs } = await supabase
+        .from('requirements')
+        .select('id')
+        .eq('project_id', projectId)
+        .eq('status', 'approved')
+        .is('deleted_at', null)
+        .in('id', toAdd);
 
-      await supabase
-        .from('specification_requirements')
-        .insert(junctionRows);
+      const validIds = new Set((validReqs ?? []).map((r) => r.id));
+      const safeToAdd = toAdd.filter((id) => validIds.has(id));
+
+      if (safeToAdd.length !== toAdd.length) {
+        console.warn(
+          `[spec-update] Rejected ${toAdd.length - safeToAdd.length} requirement(s) not belonging to project ${projectId}`
+        );
+      }
+
+      if (safeToAdd.length > 0) {
+        const junctionRows = safeToAdd.map((reqId) => ({
+          specification_id: specificationId,
+          requirement_id: reqId,
+          owner_id: user.id,
+        }));
+
+        const { error: junctionInsertError } = await supabase
+          .from('specification_requirements')
+          .insert(junctionRows);
+
+        if (junctionInsertError) {
+          console.error(
+            `[spec-update] Failed to link requirements:`,
+            junctionInsertError.message
+          );
+        }
+      }
     }
   }
 
-  // Fetch linked requirements for response
+  // Fetch linked requirements for response (exclude soft-deleted)
   const { data: junctionRows } = await supabase
     .from('specification_requirements')
     .select(
@@ -248,7 +277,8 @@ export async function PATCH(
         title,
         type,
         priority,
-        status
+        status,
+        deleted_at
       )
     `
     )
@@ -258,6 +288,7 @@ export async function PATCH(
     .map((row) => {
       const req = row.requirement as unknown as Record<string, unknown> | null;
       if (!req) return null;
+      if (req.deleted_at != null) return null;
       return {
         id: req.id as string,
         title: req.title as string,

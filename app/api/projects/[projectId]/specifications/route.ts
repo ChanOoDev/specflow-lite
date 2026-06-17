@@ -159,22 +159,45 @@ export async function POST(
     );
   }
 
-  // Insert junction rows for linked requirements
+  // Validate and insert junction rows for linked requirements
   const linkedIds = parsed.data.linked_requirement_ids ?? [];
   if (linkedIds.length > 0) {
-    const junctionRows = linkedIds.map((reqId) => ({
-      specification_id: spec.id,
-      requirement_id: reqId,
-      owner_id: user.id,
-    }));
+    // FR-005: Verify all requirements belong to the same project
+    const { data: validReqs } = await supabase
+      .from('requirements')
+      .select('id')
+      .eq('project_id', projectId)
+      .eq('status', 'approved')
+      .is('deleted_at', null)
+      .in('id', linkedIds);
 
-    const { error: junctionError } = await supabase
-      .from('specification_requirements')
-      .insert(junctionRows);
+    const validIds = new Set((validReqs ?? []).map((r) => r.id));
+    const invalidIds = linkedIds.filter((id) => !validIds.has(id));
 
-    if (junctionError) {
-      // If linking fails, still return the spec (link failure is non-fatal
-      // for the spec creation itself — the user can re-link later)
+    if (invalidIds.length > 0) {
+      console.warn(
+        `[spec-create] Rejected ${invalidIds.length} requirement(s) not belonging to project ${projectId} or not approved/deleted`
+      );
+    }
+
+    const safeIds = linkedIds.filter((id) => validIds.has(id));
+    if (safeIds.length > 0) {
+      const junctionRows = safeIds.map((reqId) => ({
+        specification_id: spec.id,
+        requirement_id: reqId,
+        owner_id: user.id,
+      }));
+
+      const { error: junctionError } = await supabase
+        .from('specification_requirements')
+        .insert(junctionRows);
+
+      if (junctionError) {
+        console.error(
+          `[spec-create] Failed to link requirements to spec ${spec.id}:`,
+          junctionError.message
+        );
+      }
     }
   }
 
