@@ -50,6 +50,9 @@ Thumbs.db
 *.swo
 *~
 
+# vite
+vite.config.ts.timestamp-*
+
 # swarmvault artifacts
 raw/
 wiki/
