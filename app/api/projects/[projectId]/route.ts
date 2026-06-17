@@ -27,7 +27,17 @@ export async function GET(
     return NextResponse.json({ error: 'NOT_FOUND' }, { status: 404 });
   }
 
-  return NextResponse.json(buildProjectResponse(data));
+  const { count: reqCount } = await supabase
+    .from('requirements')
+    .select('*', { count: 'exact', head: true })
+    .eq('project_id', projectId)
+    .is('deleted_at', null);
+
+  return NextResponse.json(
+    buildProjectResponse(data, {
+      requirements: reqCount ?? 0,
+    })
+  );
 }
 
 export async function PATCH(

@@ -1,0 +1,351 @@
+openapi: "3.0.3"
+info:
+  title: SpecFlow Lite - Requirements API
+  version: "1.0.0"
+  description: REST API for requirement management nested under projects. All endpoints require Supabase Auth session cookie.
+servers:
+  - url: /api
+    description: Relative to the Next.js application
+
+paths:
+  /projects/{projectId}/requirements:
+    get:
+      summary: List requirements in a project
+      operationId: listRequirements
+      tags: [Requirements]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Partial title match (case-insensitive)
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [functional, non_functional, technical, ux]
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum: [p1, p2, p3, p4, p5]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, approved, implemented, deferred]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Paginated requirement list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequirementListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    post:
+      summary: Create a requirement
+      operationId: createRequirement
+      tags: [Requirements]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRequirementInput"
+      responses:
+        "201":
+          description: Requirement created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequirementResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /projects/{projectId}/requirements/{requirementId}:
+    get:
+      summary: Get requirement detail
+      operationId: getRequirement
+      tags: [Requirements]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: requirementId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Requirement detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequirementResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    patch:
+      summary: Update a requirement
+      operationId: updateRequirement
+      tags: [Requirements]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: requirementId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRequirementInput"
+      responses:
+        "200":
+          description: Requirement updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequirementResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: Optimistic lock conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: CONFLICT
+                  message:
+                    type: string
+                    example: This requirement was updated by someone else. Please refresh and try again.
+
+    delete:
+      summary: Soft-delete a requirement
+      operationId: deleteRequirement
+      tags: [Requirements]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: requirementId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Requirement soft-deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  schemas:
+    RequirementResponse:
+      type: object
+      required: [id, project_id, title, description, type, priority, status, owner_id, created_at, updated_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum: [functional, non_functional, technical, ux]
+        priority:
+          type: string
+          enum: [p1, p2, p3, p4, p5]
+        status:
+          type: string
+          enum: [draft, approved, implemented, deferred]
+        owner_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    RequirementListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/RequirementResponse"
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+              minimum: 1
+            pageSize:
+              type: integer
+              minimum: 1
+              maximum: 50
+            total:
+              type: integer
+              minimum: 0
+            totalPages:
+              type: integer
+              minimum: 0
+
+    CreateRequirementInput:
+      type: object
+      required: [title, type, priority]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 3000
+          default: ""
+        type:
+          type: string
+          enum: [functional, non_functional, technical, ux]
+        priority:
+          type: string
+          enum: [p1, p2, p3, p4, p5]
+
+    UpdateRequirementInput:
+      type: object
+      minProperties: 1
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 3000
+        type:
+          type: string
+          enum: [functional, non_functional, technical, ux]
+        priority:
+          type: string
+          enum: [p1, p2, p3, p4, p5]
+        status:
+          type: string
+          enum: [draft, approved, implemented, deferred]
+        updated_at:
+          type: string
+          format: date-time
+          description: Client's last-known updated_at for optimistic locking
+
+  responses:
+    Unauthorized:
+      description: User is not authenticated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: UNAUTHORIZED
+
+    NotFound:
+      description: Project/requirement not found or user is not owner
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: NOT_FOUND
+
+    ValidationError:
+      description: Input validation failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: VALIDATION_ERROR
+              message:
+                type: string
+              details:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
