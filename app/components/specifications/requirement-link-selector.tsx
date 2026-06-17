@@ -11,7 +11,7 @@ interface ApprovedRequirement {
 async function fetchApprovedRequirements(
   projectId: string
 ): Promise<ApprovedRequirement[]> {
-  const params = new URLSearchParams({ status: 'approved', pageSize: '100' });
+  const params = new URLSearchParams({ status: 'approved', pageSize: '50' });
   const res = await fetch(
     `/api/projects/${projectId}/requirements?${params.toString()}`
   );
