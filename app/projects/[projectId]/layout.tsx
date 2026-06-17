@@ -5,11 +5,23 @@ import { IconLayoutDashboard, IconFileText, IconListCheck } from '@tabler/icons-
 import { useParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useProject } from '@/lib/hooks/use-project';
+import { useRecentProjects } from '@/lib/hooks/use-recent-projects';
+import { useEffect, useRef } from 'react';
 
 function ProjectSubNav() {
   const { projectId } = useParams<{ projectId: string }>();
   const pathname = usePathname();
   const { data: project, isLoading } = useProject(projectId);
+  const { trackProjectAccess } = useRecentProjects();
+  const trackedRef = useRef<string | null>(null);
+
+  // Track recent project access when project data loads
+  useEffect(() => {
+    if (project && project.id !== trackedRef.current) {
+      trackedRef.current = project.id;
+      trackProjectAccess(project.id, project.name);
+    }
+  }, [project, trackProjectAccess]);
 
   const base = `/projects/${projectId}`;
 

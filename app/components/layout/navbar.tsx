@@ -1,11 +1,12 @@
 'use client';
 
 import { NavLink, Stack } from '@mantine/core';
-import { IconFolders, IconFileText, IconListCheck } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconFolders } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
+  { label: 'Dashboard', href: '/', icon: IconLayoutDashboard },
   { label: 'Projects', href: '/projects', icon: IconFolders },
 ];
 
