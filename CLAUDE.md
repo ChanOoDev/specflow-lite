@@ -170,3 +170,23 @@ Use Sequential Thinking MCP for:
 - Feature planning
 
 Prefer explicit reasoning before implementation.
+
+## Specification Workflow
+
+All features must follow:
+
+1. Requirement Discovery
+2. Specification
+3. Plan
+4. Tasks
+5. Implementation
+6. Review
+7. Testing
+
+Do not implement features without an approved specification.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan:
+specs/001-project-management/plan.md
+<!-- SPECKIT END -->
