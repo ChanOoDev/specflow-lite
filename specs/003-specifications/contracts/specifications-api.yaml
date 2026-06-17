@@ -1,0 +1,182 @@
+# Specifications API Contracts
+
+**Feature**: 003-specifications
+**Base Path**: `/api/projects/{projectId}/specifications`
+
+## Authentication
+
+All endpoints require a valid Supabase session cookie. Unauthenticated requests receive:
+- `307` redirect to `/auth/login` (page routes)
+- `401` Unauthorized (API routes via middleware)
+
+## Authorization
+
+All endpoints verify the authenticated user is the project owner. Non-owners receive `404` (no resource differentiation).
+
+---
+
+## Endpoints
+
+### GET /api/projects/{projectId}/specifications
+
+List specifications for a project.
+
+**Query Parameters**:
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `search` | string | `""` | Case-insensitive title search |
+| `status` | specification_status | (all) | Filter by status |
+| `page` | integer | `1` | Page number (1-based) |
+| `pageSize` | integer | `20` | Items per page (max 50) |
+
+**Response** `200 OK`:
+
+```json
+{
+  "specifications": [
+    {
+      "id": "uuid",
+      "project_id": "uuid",
+      "title": "string",
+      "description": "string|null",
+      "status": "draft|in_progress|completed|approved|archived",
+      "requirement_count": 3,
+      "created_at": "2026-06-17T14:00:00.000Z",
+      "updated_at": "2026-06-17T14:00:00.000Z"
+    }
+  ],
+  "total": 42,
+  "page": 1,
+  "pageSize": 20,
+  "totalPages": 3
+}
+```
+
+**Errors**:
+- `404` — Project not found or not owned by authenticated user
+
+---
+
+### POST /api/projects/{projectId}/specifications
+
+Create a new specification.
+
+**Request Body**:
+
+```json
+{
+  "title": "string (1-200 chars, required)",
+  "description": "string (0-5000 chars, optional)",
+  "requirement_ids": ["uuid", ...]  // optional, must be approved requirements in same project
+}
+```
+
+**Response** `201 Created`:
+
+```json
+{
+  "id": "uuid",
+  "project_id": "uuid",
+  "title": "string",
+  "description": "string|null",
+  "status": "draft",
+  "requirement_count": 2,
+  "created_at": "2026-06-17T14:00:00.000Z",
+  "updated_at": "2026-06-17T14:00:00.000Z"
+}
+```
+
+**Errors**:
+- `400` `VALIDATION_ERROR` — Missing title, title too long, invalid requirement_ids
+- `404` — Project not found or not owned
+
+---
+
+### GET /api/projects/{projectId}/specifications/{specificationId}
+
+Get specification detail with linked requirements.
+
+**Response** `200 OK`:
+
+```json
+{
+  "id": "uuid",
+  "project_id": "uuid",
+  "title": "string",
+  "description": "string|null",
+  "status": "draft|in_progress|completed|approved|archived",
+  "created_at": "2026-06-17T14:00:00.000Z",
+  "updated_at": "2026-06-17T14:00:00.000Z",
+  "linked_requirements": [
+    {
+      "id": "uuid",
+      "title": "string",
+      "type": "functional|non_functional|technical|ux",
+      "priority": "p1|p2|p3|p4|p5",
+      "status": "approved"
+    }
+  ]
+}
+```
+
+**Errors**:
+- `404` — Specification not found, project not found, or not owned
+
+---
+
+### PATCH /api/projects/{projectId}/specifications/{specificationId}
+
+Update a specification. Uses optimistic locking.
+
+**Request Body** (all fields optional, at least one required):
+
+```json
+{
+  "title": "string (1-200 chars)",
+  "description": "string (0-5000 chars)",
+  "status": "in_progress|completed|draft|archived",
+  "link_requirement_ids": ["uuid", ...],    // requirements to ADD
+  "unlink_requirement_ids": ["uuid", ...],  // requirements to REMOVE
+  "updated_at": "2026-06-17T14:00:00.000+00:00"  // REQUIRED for optimistic locking
+}
+```
+
+**Response** `200 OK` — Full specification object (same shape as GET detail)
+
+**Errors**:
+- `400` `VALIDATION_ERROR` — Invalid fields, invalid status transition
+- `400` `PROJECT_ARCHIVED` — Cannot modify specifications in archived project
+- `400` `REQUIREMENT_NOT_APPROVED` — Cannot link a non-approved requirement
+- `400` `REQUIREMENT_WRONG_PROJECT` — Cannot link from different project
+- `404` — Specification not found, project not found, or not owned
+- `409` `CONFLICT` — Stale `updated_at` (optimistic lock failure)
+
+---
+
+### DELETE /api/projects/{projectId}/specifications/{specificationId}
+
+Soft-delete a specification. All linked requirements are unlinked. Requirements themselves are untouched.
+
+**Response** `200 OK`:
+
+```json
+{
+  "message": "Specification deleted"
+}
+```
+
+**Errors**:
+- `404` — Specification not found, project not found, or not owned
+
+---
+
+## Status Transitions
+
+| Current | Allowed |
+|---------|---------|
+| `draft` | `in_progress`, `archived` |
+| `in_progress` | `completed`, `draft` |
+| `completed` | `approved`, `draft` |
+| `approved` | (none) |
+| `archived` | `draft` |
