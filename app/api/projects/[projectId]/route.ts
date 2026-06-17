@@ -33,9 +33,16 @@ export async function GET(
     .eq('project_id', projectId)
     .is('deleted_at', null);
 
+  const { count: specCount } = await supabase
+    .from('specifications')
+    .select('*', { count: 'exact', head: true })
+    .eq('project_id', projectId)
+    .is('deleted_at', null);
+
   return NextResponse.json(
     buildProjectResponse(data, {
       requirements: reqCount ?? 0,
+      specifications: specCount ?? 0,
     })
   );
 }
