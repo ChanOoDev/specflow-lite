@@ -180,15 +180,15 @@
 
 **Purpose**: Final validation, integration, and quality assurance across all stories
 
-- [ ] T037 [P] Validate all E2E tests pass: `npx playwright test tests/e2e/requirements-*`
-- [ ] T038 [P] Validate all unit and integration tests pass: `npx test tests/unit/ tests/integration/`
-- [ ] T039 Run full quickstart.md manual validation scenarios from `specs/002-requirements-management/quickstart.md`
-- [ ] T040 [P] Verify TypeScript strict mode — no type errors, no `any` types without justification
-- [ ] T041 [P] Verify responsive layout on mobile (375px) and desktop (1280px) using Playwright MCP
-- [ ] T042 [P] Verify no browser console errors on all requirements pages using Playwright MCP
-- [ ] T043 [P] Verify RLS policies: non-owner gets 404 on all requirements endpoints
-- [ ] T044 Run QA Agent review against spec acceptance criteria
-- [ ] T045 Run Reviewer Agent final code review
+- [x] T037 [P] Validate all E2E tests pass: `npx playwright test tests/e2e/requirements-*`
+- [x] T038 [P] Validate all unit and integration tests pass: `npx test tests/unit/ tests/integration/`
+- [x] T039 Run full quickstart.md manual validation scenarios from `specs/002-requirements-management/quickstart.md`
+- [x] T040 [P] Verify TypeScript strict mode — no type errors, no `any` types without justification
+- [x] T041 [P] Verify responsive layout on mobile (375px) and desktop (1280px) using Playwright MCP
+- [x] T042 [P] Verify no browser console errors on all requirements pages using Playwright MCP
+- [x] T043 [P] Verify RLS policies: non-owner gets 404 on all requirements endpoints
+- [x] T044 Run QA Agent review against spec acceptance criteria
+- [x] T045 Run Reviewer Agent final code review
 
 ---
 
