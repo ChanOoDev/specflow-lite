@@ -117,7 +117,7 @@ function SpecificationDetailPageContent() {
           )}
         </Group>
 
-        <SpecificationDetail specification={specification} />
+        <SpecificationDetail specification={specification} projectId={projectId} />
 
         <Divider />
 
@@ -130,6 +130,14 @@ function SpecificationDetailPageContent() {
                 ? `${taskCounts.done} of ${taskCounts.total} tasks done`
                 : '0 of 0 tasks'}
             </Text>
+            <Button
+              variant="subtle"
+              size="compact-sm"
+              component={Link}
+              href={`/projects/${projectId}/specifications/${specificationId}/tasks`}
+            >
+              View All
+            </Button>
           </Group>
           {!isArchived && specification.status !== 'approved' && (
             <Button
