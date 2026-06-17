@@ -80,9 +80,27 @@ export async function GET(
     })
     .filter(Boolean);
 
+  // Fetch task counts for this specification
+  const { count: taskCount } = await supabase
+    .from('tasks')
+    .select('*', { count: 'exact', head: true })
+    .eq('specification_id', specificationId)
+    .is('deleted_at', null);
+
+  const { count: doneTaskCount } = await supabase
+    .from('tasks')
+    .select('*', { count: 'exact', head: true })
+    .eq('specification_id', specificationId)
+    .eq('status', 'done')
+    .is('deleted_at', null);
+
   return NextResponse.json({
     ...buildSpecificationResponse(spec),
     linked_requirements: linkedRequirements,
+    task_counts: {
+      total: taskCount ?? 0,
+      done: doneTaskCount ?? 0,
+    },
   });
 }
 
@@ -299,9 +317,27 @@ export async function PATCH(
     })
     .filter(Boolean);
 
+  // Fetch task counts for this specification
+  const { count: taskCount } = await supabase
+    .from('tasks')
+    .select('*', { count: 'exact', head: true })
+    .eq('specification_id', specificationId)
+    .is('deleted_at', null);
+
+  const { count: doneTaskCount } = await supabase
+    .from('tasks')
+    .select('*', { count: 'exact', head: true })
+    .eq('specification_id', specificationId)
+    .eq('status', 'done')
+    .is('deleted_at', null);
+
   return NextResponse.json({
     ...buildSpecificationResponse(updated),
     linked_requirements: linkedRequirements,
+    task_counts: {
+      total: taskCount ?? 0,
+      done: doneTaskCount ?? 0,
+    },
   });
 }
 

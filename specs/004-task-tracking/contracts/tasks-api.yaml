@@ -1,0 +1,235 @@
+openapi: "3.0.3"
+info:
+  title: Tasks API
+  description: CRUD endpoints for tasks within a specification
+  version: "1.0.0"
+
+paths:
+  /api/projects/{projectId}/specifications/{specificationId}/tasks:
+    get:
+      summary: List tasks in a specification
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: specificationId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: search
+          in: query
+          schema: { type: string }
+          description: Case-insensitive title search
+        - name: status
+          in: query
+          schema: { type: string, enum: [todo, in_progress, done] }
+          description: Filter by task status
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: pageSize
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+      responses:
+        "200":
+          description: Task list with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, pagination]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Task" }
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+        "400":
+          description: Invalid query parameters
+        "401":
+          description: Unauthorized
+        "404":
+          description: Project or specification not found (or not owned by user)
+
+    post:
+      summary: Create a task
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: specificationId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                description:
+                  type: string
+                  maxLength: 5000
+                  default: ""
+      responses:
+        "201":
+          description: Created task
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Task" }
+        "400":
+          description: Validation error or project archived / spec approved
+        "401":
+          description: Unauthorized
+        "404":
+          description: Project or specification not found
+
+  /api/projects/{projectId}/specifications/{specificationId}/tasks/{taskId}:
+    get:
+      summary: Get task detail
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: specificationId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: taskId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Task detail
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TaskDetail" }
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
+
+    patch:
+      summary: Update a task
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: specificationId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: taskId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [updated_at]
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 200
+                description:
+                  type: string
+                  maxLength: 5000
+                status:
+                  type: string
+                  enum: [todo, in_progress, done]
+                position:
+                  type: integer
+                  minimum: 1
+                updated_at:
+                  type: string
+                  format: date-time
+                  description: Current updated_at value for optimistic locking
+      responses:
+        "200":
+          description: Updated task
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Task" }
+        "400":
+          description: Validation error, invalid status transition, or spec approved
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
+        "409":
+          description: Conflict (stale updated_at)
+
+    delete:
+      summary: Soft-delete a task
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: specificationId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - name: taskId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Task soft-deleted
+        "400":
+          description: Spec approved or project archived
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not found
+
+components:
+  schemas:
+    Task:
+      type: object
+      required: [id, specification_id, project_id, title, description, status, position, owner_id, created_at, updated_at]
+      properties:
+        id: { type: string, format: uuid }
+        specification_id: { type: string, format: uuid }
+        project_id: { type: string, format: uuid }
+        title: { type: string }
+        description: { type: string }
+        status: { type: string, enum: [todo, in_progress, done] }
+        position: { type: integer }
+        owner_id: { type: string, format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        deleted_at: { type: string, format: date-time, nullable: true }
+
+    TaskDetail:
+      allOf:
+        - { $ref: "#/components/schemas/Task" }
+        - type: object
+          properties:
+            specification_title: { type: string }
+              description: Parent specification title for context
+
+    Pagination:
+      type: object
+      required: [page, pageSize, total, totalPages]
+      properties:
+        page: { type: integer }
+        pageSize: { type: integer }
+        total: { type: integer }
+        totalPages: { type: integer }
