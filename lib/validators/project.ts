@@ -36,7 +36,7 @@ export const updateProjectSchema = z
       .max(2000, { error: 'Description must be 2000 characters or fewer' })
       .optional(),
     status: projectStatusSchema.optional(),
-    updated_at: z.string().datetime(),
+    updated_at: z.string().datetime({ offset: true }),
   })
   .refine(
     (data) =>

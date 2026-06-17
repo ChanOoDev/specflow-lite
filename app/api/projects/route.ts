@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
   }
 
   const total = count ?? 0;
-  const projects = (data ?? []).map(buildProjectResponse);
+  const projects = (data ?? []).map((row) => buildProjectResponse(row));
 
   return NextResponse.json({
     data: projects,
