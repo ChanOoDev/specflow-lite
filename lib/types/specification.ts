@@ -25,6 +25,10 @@ export interface LinkedRequirement {
 
 export interface SpecificationWithLinks extends Specification {
   linked_requirements: LinkedRequirement[];
+  task_counts?: {
+    total: number;
+    done: number;
+  };
 }
 
 export interface SpecificationListQueryParams {

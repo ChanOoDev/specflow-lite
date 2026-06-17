@@ -11,16 +11,19 @@ import {
   Button,
   Skeleton,
   Center,
+  Divider,
 } from '@mantine/core';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconTrash, IconListCheck } from '@tabler/icons-react';
 import { useSpecification } from '@/lib/hooks/use-specification';
 import { useDeleteSpecification } from '@/lib/hooks/use-specification-mutations';
 import { useProject } from '@/lib/hooks/use-project';
 import { SpecificationDetail } from '@/app/components/specifications/specification-detail';
 import { SpecificationDeleteConfirm } from '@/app/components/specifications/specification-delete-confirm';
-import { useState } from 'react';
+import { TaskList } from '@/app/components/tasks/task-list';
+import { Suspense, useState } from 'react';
+import Link from 'next/link';
 
-export default function SpecificationDetailPage() {
+function SpecificationDetailPageContent() {
   const { projectId, specificationId } = useParams<{
     projectId: string;
     specificationId: string;
@@ -74,6 +77,8 @@ export default function SpecificationDetailPage() {
     );
   }
 
+  const taskCounts = specification.task_counts;
+
   return (
     <Container size="md" py="md">
       <Stack>
@@ -113,6 +118,36 @@ export default function SpecificationDetailPage() {
         </Group>
 
         <SpecificationDetail specification={specification} />
+
+        <Divider />
+
+        {/* Task Progress & List */}
+        <Group justify="space-between" wrap="wrap">
+          <Group gap="sm">
+            <IconListCheck size={20} />
+            <Text size="sm" fw={500}>
+              {taskCounts
+                ? `${taskCounts.done} of ${taskCounts.total} tasks done`
+                : '0 of 0 tasks'}
+            </Text>
+          </Group>
+          {!isArchived && specification.status !== 'approved' && (
+            <Button
+              component={Link}
+              href={`/projects/${projectId}/specifications/${specificationId}/tasks/new`}
+              size="xs"
+            >
+              Add Task
+            </Button>
+          )}
+        </Group>
+
+        <Suspense fallback={<Skeleton height={200} radius="md" />}>
+          <TaskList
+            projectId={projectId}
+            specificationId={specificationId}
+          />
+        </Suspense>
       </Stack>
 
       <SpecificationDeleteConfirm
@@ -129,5 +164,19 @@ export default function SpecificationDetailPage() {
         loading={deleteMutation.isPending}
       />
     </Container>
+  );
+}
+
+export default function SpecificationDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <Container size="md" py="md">
+          <Skeleton height={600} radius="md" />
+        </Container>
+      }
+    >
+      <SpecificationDetailPageContent />
+    </Suspense>
   );
 }
