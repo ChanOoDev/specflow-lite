@@ -4,9 +4,9 @@ import { useProjects } from '@/lib/hooks/use-projects';
 import { ProjectList } from '@/app/components/projects/project-list';
 import { ProjectListSkeleton } from '@/app/components/projects/project-list-skeleton';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, Suspense } from 'react';
 
-export default function ProjectsPage() {
+function ProjectsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -63,5 +63,13 @@ export default function ProjectsPage() {
         })
       }
     />
+  );
+}
+
+export default function ProjectsPage() {
+  return (
+    <Suspense fallback={<ProjectListSkeleton />}>
+      <ProjectsPageContent />
+    </Suspense>
   );
 }

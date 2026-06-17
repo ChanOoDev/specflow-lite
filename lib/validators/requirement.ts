@@ -59,7 +59,7 @@ export const updateRequirementSchema = z
     type: requirementTypeSchema.optional(),
     priority: requirementPrioritySchema.optional(),
     status: requirementStatusSchema.optional(),
-    updated_at: z.string().datetime(),
+    updated_at: z.string().datetime({ offset: true }),
   })
   .refine(
     (data) =>
@@ -94,7 +94,7 @@ export const requirementResponseSchema = z.object({
   status: requirementStatusSchema,
   owner_id: z.string().uuid(),
   created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
+  updated_at: z.string().datetime({ offset: true }),
   deleted_at: z.string().datetime().nullable(),
 });
 
