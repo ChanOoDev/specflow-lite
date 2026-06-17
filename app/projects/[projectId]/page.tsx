@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Container,
   Paper,
@@ -77,8 +78,8 @@ export default function ProjectDetailPage() {
   const updatedDate = new Date(project.updated_at).toLocaleDateString();
 
   const countCards = [
-    { label: 'Requirements', count: project.counts.requirements },
-    { label: 'Specifications', count: project.counts.specifications },
+    { label: 'Requirements', count: project.counts.requirements, href: `/projects/${projectId}/requirements` },
+    { label: 'Specifications', count: project.counts.specifications, href: `/projects/${projectId}/specifications` },
     { label: 'Tasks', count: project.counts.tasks },
     { label: 'Completed', count: project.counts.completedTasks },
   ];
@@ -148,18 +149,28 @@ export default function ProjectDetailPage() {
         </Group>
 
         <SimpleGrid cols={{ base: 2, sm: 4 }}>
-          {countCards.map((card) => (
-            <Card key={card.label} shadow="sm" padding="md" radius="md" withBorder>
-              <Stack align="center" gap="xs">
-                <Text size="xl" fw={700}>
-                  {card.count}
-                </Text>
-                <Text size="xs" c="dimmed">
-                  {card.label}
-                </Text>
-              </Stack>
-            </Card>
-          ))}
+          {countCards.map((card) => {
+            const content = (
+              <Card key={card.label} shadow="sm" padding="md" radius="md" withBorder style={'href' in card ? { cursor: 'pointer' } : undefined}>
+                <Stack align="center" gap="xs">
+                  <Text size="xl" fw={700}>
+                    {card.count}
+                  </Text>
+                  <Text size="xs" c="dimmed">
+                    {card.label}
+                  </Text>
+                </Stack>
+              </Card>
+            );
+            if ('href' in card && card.href) {
+              return (
+                <Link key={card.label} href={card.href as string} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  {content}
+                </Link>
+              );
+            }
+            return content;
+          })}
         </SimpleGrid>
       </Stack>
 

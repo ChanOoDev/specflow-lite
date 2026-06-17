@@ -3,13 +3,16 @@
 import { Paper, Stack, Title, Text, Group, Badge, Card } from '@mantine/core';
 import { SpecStatusBadge } from './spec-status-badge';
 import type { SpecificationWithLinks } from '@/lib/types/specification';
+import Link from 'next/link';
 
 interface SpecificationDetailProps {
   specification: SpecificationWithLinks;
+  projectId: string;
 }
 
 function RequirementLinkCard({
   requirement,
+  projectId,
 }: {
   requirement: {
     id: string;
@@ -18,9 +21,18 @@ function RequirementLinkCard({
     priority: string;
     status: string;
   };
+  projectId: string;
 }) {
   return (
-    <Card shadow="sm" padding="sm" radius="md" withBorder>
+    <Card
+      shadow="sm"
+      padding="sm"
+      radius="md"
+      withBorder
+      component={Link}
+      href={`/projects/${projectId}/requirements/${requirement.id}`}
+      style={{ cursor: 'pointer' }}
+    >
       <Group justify="space-between" wrap="nowrap">
         <Stack gap={2}>
           <Text size="sm" fw={600}>
@@ -45,6 +57,7 @@ function RequirementLinkCard({
 
 export function SpecificationDetail({
   specification,
+  projectId,
 }: SpecificationDetailProps) {
   const createdDate = new Date(specification.created_at).toLocaleDateString();
   const updatedDate = new Date(specification.updated_at).toLocaleDateString();
@@ -81,7 +94,7 @@ export function SpecificationDetail({
         ) : (
           <Stack gap="sm">
             {specification.linked_requirements.map((req) => (
-              <RequirementLinkCard key={req.id} requirement={req} />
+              <RequirementLinkCard key={req.id} requirement={req} projectId={projectId} />
             ))}
           </Stack>
         )}

@@ -2,9 +2,9 @@
 
 import { Suspense } from 'react';
 import { Container, Paper, Stack, Title, Group, Button, Skeleton } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
+import { IconPlus, IconArrowLeft } from '@tabler/icons-react';
 import { TaskList } from '@/app/components/tasks/task-list';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 function TaskListPageContent() {
@@ -12,12 +12,26 @@ function TaskListPageContent() {
     projectId: string;
     specificationId: string;
   }>();
+  const router = useRouter();
 
   return (
     <Container size="md" py="md">
       <Stack gap="md">
+        <Title order={2}>Tasks</Title>
         <Group justify="space-between" wrap="wrap">
-          <Title order={2}>Tasks</Title>
+          <Group>
+            <Button
+              variant="subtle"
+              leftSection={<IconArrowLeft size={16} />}
+              onClick={() =>
+                router.push(
+                  `/projects/${projectId}/specifications/${specificationId}`
+                )
+              }
+            >
+              Back to Specification
+            </Button>
+          </Group>
           <Button
             component={Link}
             href={`/projects/${projectId}/specifications/${specificationId}/tasks/new`}
