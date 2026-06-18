@@ -15,19 +15,8 @@ export async function createClient() {
     );
   }
 
-  // Guest mode — use admin client to bypass RLS so guests see all data
-  if (cookieStore.get('guest-mode')?.value === 'true') {
-    const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (serviceRole) {
-      return createServerClient(url, serviceRole, {
-        cookies: {
-          getAll() { return cookieStore.getAll(); },
-          setAll() {}, // no-op: admin client doesn't need to write cookies
-        },
-      });
-    }
-  }
-
+  // Guest mode — uses same anon key. Public read policies in migration 005
+  // allow unauthenticated reads. POST/PATCH/DELETE handlers block guests.
   return createServerClient(url, key, {
     cookies: {
       getAll() {
