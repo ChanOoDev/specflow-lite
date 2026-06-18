@@ -6,12 +6,10 @@ import { IconUser, IconLogout, IconMoon, IconSun } from '@tabler/icons-react';
 import { useMantineColorScheme } from '@mantine/core';
 import { Navbar } from './navbar';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 
 function UserMenu() {
-  const router = useRouter();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [user, setUser] = useState<User | null>(null);
   const [isGuest, setIsGuest] = useState(false);
@@ -47,15 +45,14 @@ function UserMenu() {
       if (isGuest) {
         // Clear guest cookie
         document.cookie = 'guest-mode=; path=/; max-age=0';
-        router.push('/auth/login');
+        window.location.href = '/auth/login';
         return;
       }
       const supabase = createClient();
       await supabase.auth.signOut();
-      router.push('/auth/login');
-      router.refresh();
+      window.location.href = '/auth/login';
     } catch {
-      router.push('/auth/login');
+      window.location.href = '/auth/login';
     }
   };
 
