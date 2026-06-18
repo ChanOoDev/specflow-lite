@@ -32,7 +32,7 @@ export default function LoginPage() {
       const { error: signInError } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `https://specflow-lite.vercel.app/auth/callback`,
         },
       });
       if (signInError) {
