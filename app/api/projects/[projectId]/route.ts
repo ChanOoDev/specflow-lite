@@ -16,13 +16,13 @@ export async function GET(
   const { projectId } = await params;
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('projects')
     .select('*')
     .eq('id', projectId)
-    .eq('owner_id', user!.id)
-    .is('deleted_at', null)
-    .single();
+    .is('deleted_at', null);
+  if (!guest) query = query.eq('owner_id', user!.id);
+  const { data, error } = await query.single();
 
   if (error || !data) {
     return NextResponse.json({ error: 'NOT_FOUND' }, { status: 404 });

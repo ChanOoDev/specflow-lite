@@ -24,7 +24,6 @@ export async function GET(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -118,7 +117,6 @@ export async function POST(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 

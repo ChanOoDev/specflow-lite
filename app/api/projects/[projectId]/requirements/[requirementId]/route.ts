@@ -24,7 +24,6 @@ export async function GET(
     .from('projects')
     .select('id')
     .eq('id', projectId)
-    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -65,7 +64,6 @@ export async function PATCH(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -174,7 +172,6 @@ export async function DELETE(
     .from('projects')
     .select('id')
     .eq('id', projectId)
-    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
