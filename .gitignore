@@ -61,3 +61,10 @@ agent/
 inbox/
 swarmvault.config.json
 swarmvault.schema.md
+
+
+# My Ignore
+
+debug/
+public/
+presentation/
