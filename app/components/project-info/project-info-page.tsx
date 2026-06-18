@@ -44,23 +44,26 @@ import {
 // ─── Data ────────────────────────────────────────────────────────
 
 const STATS = [
-  { label: 'Features', value: 5 },
-  { label: 'Components', value: 35 },
-  { label: 'API Routes', value: 13 },
-  { label: 'Tests', value: 33 },
-  { label: 'DB Tables', value: 5 },
+  { label: 'Features', value: 7 },
+  { label: 'Components', value: 41 },
+  { label: 'API Routes', value: 10 },
+  { label: 'Tests', value: 100 },
+  { label: 'DB Tables', value: 4 },
   { label: 'AI Agents', value: 6 },
-  { label: 'Skills', value: 14 },
+  { label: 'Skills', value: 18 },
   { label: 'MCP Tools', value: 8 },
 ];
 
 const SKILLS = [
   { skill: 'ba-skill', phase: 'Analysis', output: 'User stories, acceptance criteria, business rules' },
+  { skill: 'speckit-analyze', phase: 'Analysis', output: 'Feature analysis and structured requirements discovery' },
   { skill: 'speckit-clarify', phase: 'Analysis', output: 'Clarification questions to resolve ambiguities' },
   { skill: 'speckit-specify', phase: 'Spec', output: 'Structured feature specification documents' },
+  { skill: 'spec-kit-skill', phase: 'Spec', output: 'Orchestrates full Spec Kit workflow across all phases' },
   { skill: 'architect-skill', phase: 'Design', output: 'DB schema, API contracts, security patterns' },
   { skill: 'speckit-plan', phase: 'Plan', output: 'Implementation plan from specification' },
   { skill: 'speckit-tasks', phase: 'Tasks', output: 'Granular implementation tasks with dependencies' },
+  { skill: 'speckit-taskstoissues', phase: 'Tasks', output: 'Converts task list to GitHub issues for tracking' },
   { skill: 'speckit-implement', phase: 'Build', output: 'Executes tasks following plan and conventions' },
   { skill: 'ux-skill', phase: 'Design', output: 'Component composition, layouts, empty states' },
   { skill: 'speckit-checklist', phase: 'QA', output: 'Quality checklists for pre-review validation' },
@@ -69,6 +72,7 @@ const SKILLS = [
   { skill: 'security-review-skill', phase: 'Security', output: 'RLS audit, auth review, OWASP checks' },
   { skill: 'swarmvault', phase: 'Knowledge', output: 'Code graph compilation, wiki, graph-first search' },
   { skill: 'speckit-constitution', phase: 'Rules', output: 'Project conventions and development rules' },
+  { skill: 'speckit-agent-context-update', phase: 'Rules', output: 'Refreshes agent context files after spec/plan changes' },
 ];
 
 const AGENTS = [
@@ -125,7 +129,7 @@ const AGENTS = [
 const MCP_TOOLS = [
   { name: 'Context7', category: 'Docs', role: 'Real-time API docs for Next.js, Supabase, Mantine, TanStack Query, Zod', usedBy: 'Architect, Developer, Security' },
   { name: 'GitHub', category: 'DevOps', role: 'Issues, PRs, branches, Copilot code review, repo management', usedBy: 'Developer, Reviewer' },
-  { name: 'Playwright', category: 'Testing', role: 'Browser automation, UI verification, console error detection, 22 E2E tests', usedBy: 'Developer, QA' },
+  { name: 'Playwright', category: 'Testing', role: 'Browser automation, UI verification, console error detection, 89 E2E tests', usedBy: 'Developer, QA' },
   { name: 'Magic UI', category: 'Design', role: 'Component inspiration for dashboards, empty states, cards, hero sections', usedBy: 'Developer' },
   { name: 'Sequential Thinking', category: 'Reasoning', role: 'Structured problem-solving for architecture, DB design, complex debugging', usedBy: 'BA, Architect' },
   { name: 'SwarmVault', category: 'Knowledge', role: 'Automated code graph compilation, wiki management, graph-first search hooks', usedBy: 'All agents' },
@@ -141,42 +145,54 @@ const TECH_STACK = [
   { layer: 'Validation', tech: 'Zod', version: '4.4', purpose: 'Form + API schema validation' },
   { layer: 'Icons', tech: 'Tabler Icons', version: '3.44', purpose: '3,000+ vector icons' },
   { layer: 'Database', tech: 'Supabase PostgreSQL', version: '2.108', purpose: 'Managed db, RLS, real-time' },
-  { layer: 'Auth', tech: 'Supabase Auth', version: '0.12', purpose: 'Email/password, session management' },
-  { layer: 'E2E Testing', tech: 'Playwright', version: '1.61', purpose: '22 browser test scenarios' },
+  { layer: 'Auth', tech: 'Supabase Auth', version: '0.12', purpose: 'GitHub OAuth, session management' },
+  { layer: 'E2E Testing', tech: 'Playwright', version: '1.61', purpose: '89 browser test scenarios' },
   { layer: 'Unit Testing', tech: 'Vitest', version: '4.1', purpose: '8 unit + 3 integration tests' },
-  { layer: 'Deployment', tech: 'Vercel', version: '—', purpose: 'Edge network, zero-config' },
+  { layer: 'Deployment', tech: 'Vercel', version: '—', purpose: 'GitHub auto-deploy, PR previews, zero-config' },
 ];
 
 const FEATURES = [
   {
     title: 'Project Management',
     description: 'CRUD, status lifecycle (Active/Paused/Completed/Archived), search & filter, archive/restore, soft-delete with 30-day recovery, optimistic locking',
-    meta: '7 components · 5 API routes · 11 E2E tests',
+    meta: '7 components · 3 API routes · 19 E2E tests',
     color: 'blue',
   },
   {
     title: 'Requirements Management',
     description: '4 types (Functional/Non-functional/Technical/UX), P1–P5 priority, Draft→Approved flow, link to specifications',
-    meta: '7 components · 2 API routes · 6 E2E tests',
+    meta: '8 components · 2 API routes · 16 E2E tests',
     color: 'green',
   },
   {
     title: 'Specification Management',
     description: 'Create from approved requirements, requirement linking, Draft→In Review→Approved→Implemented lifecycle',
-    meta: '8 components · 3 API routes · 5 E2E tests',
+    meta: '8 components · 2 API routes · 17 E2E tests',
     color: 'yellow',
   },
   {
     title: 'Task & Implementation Tracking',
     description: 'Todo/In Progress/Done status, lock on approved spec, cross-project listing, per-spec task board',
-    meta: '7 components · 2 API routes · 6 E2E tests',
+    meta: '7 components · 2 API routes · 16 E2E tests',
     color: 'pink',
   },
   {
     title: 'Dashboard',
     description: 'Project health overview, recent projects quick-access, open tasks at-a-glance, empty states with CTAs',
-    meta: '6 components · 1 API route · 1 E2E test',
+    meta: '6 components · 1 API route · 9 E2E tests',
     color: 'grape',
+  },
+  {
+    title: 'Project Info',
+    description: 'Project statistics, build methodology timeline, AI agents, skills registry, MCP tools, tech stack, feature overview',
+    meta: '1 component · 0 API routes · 12 E2E tests',
+    color: 'cyan',
+  },
+  {
+    title: 'Vercel CI/CD Deployment',
+    description: 'GitHub integration, auto-deploy on push to main, PR preview deployments, environment variable management, zero-downtime rollback',
+    meta: '1 config file · 0 API routes · proxy.ts',
+    color: 'orange',
   },
 ];
 
