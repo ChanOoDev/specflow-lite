@@ -1,4 +1,4 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import {
   createSpecificationSchema,
   specificationListQuerySchema,
@@ -11,7 +11,8 @@ export async function GET(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user && !guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -23,7 +24,7 @@ export async function GET(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -96,7 +97,8 @@ export async function POST(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -108,7 +110,7 @@ export async function POST(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -147,7 +149,7 @@ export async function POST(
       project_id: projectId,
       title: parsed.data.title.trim(),
       description: parsed.data.description ?? '',
-      owner_id: user.id, // Will be overridden by trigger, satisfies RLS check
+      owner_id: user!.id, // Will be overridden by trigger, satisfies RLS check
     })
     .select()
     .single();
@@ -185,7 +187,7 @@ export async function POST(
       const junctionRows = safeIds.map((reqId) => ({
         specification_id: spec.id,
         requirement_id: reqId,
-        owner_id: user.id,
+        owner_id: user!.id,
       }));
 
       const { error: junctionError } = await supabase

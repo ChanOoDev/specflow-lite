@@ -1,24 +1,26 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import { dashboardResponseSchema } from '@/lib/validators/dashboard';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user && !guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
   const supabase = await createClient();
 
-  // 1. Fetch all user projects (non-deleted, non-archived)
-  const { data: projects, error: projectsError } = await supabase
+  // 1. Fetch projects (non-deleted, non-archived). Guests see all, users see their own.
+  let query = supabase
     .from('projects')
     .select('id, name, status, updated_at')
-    .eq('owner_id', user.id)
     .is('deleted_at', null)
     .neq('status', 'archived')
     .order('updated_at', { ascending: false })
     .limit(50);
+  if (!guest) query = query.eq('owner_id', user!.id);
+  const { data: projects, error: projectsError } = await query;
 
   if (projectsError) {
     return NextResponse.json(

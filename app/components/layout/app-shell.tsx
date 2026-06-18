@@ -14,9 +14,19 @@ function UserMenu() {
   const router = useRouter();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [user, setUser] = useState<User | null>(null);
+  const [isGuest, setIsGuest] = useState(false);
   const [clientError, setClientError] = useState(false);
 
   useEffect(() => {
+    // Check guest mode first
+    const guestCookie = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('guest-mode='));
+    if (guestCookie?.split('=')[1] === 'true') {
+      setIsGuest(true);
+      return;
+    }
+
     let cancelled = false;
     try {
       const supabase = createClient();
@@ -34,22 +44,29 @@ function UserMenu() {
 
   const handleLogout = async () => {
     try {
+      if (isGuest) {
+        // Clear guest cookie
+        document.cookie = 'guest-mode=; path=/; max-age=0';
+        router.push('/auth/login');
+        return;
+      }
       const supabase = createClient();
       await supabase.auth.signOut();
       router.push('/auth/login');
       router.refresh();
     } catch {
-      // Silently fail — user is already logged out
       router.push('/auth/login');
     }
   };
 
-  const initials = user?.email
+  const initials = isGuest
+    ? '👤'
+    : user?.email
     ? user.email.substring(0, 2).toUpperCase()
     : '?';
   const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
-  const displayName = user?.user_metadata?.full_name as string | undefined;
-  const email = user?.email;
+  const displayName = isGuest ? 'Guest' : (user?.user_metadata?.full_name as string | undefined);
+  const email = isGuest ? 'Browsing as guest' : user?.email;
 
   return (
     <Menu shadow="md" width={240} position="bottom-end">
@@ -103,7 +120,7 @@ function UserMenu() {
           color="red"
           onClick={handleLogout}
         >
-          Sign out
+          {isGuest ? 'Exit Guest Mode' : 'Sign out'}
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

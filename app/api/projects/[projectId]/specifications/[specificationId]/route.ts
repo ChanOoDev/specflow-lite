@@ -1,4 +1,4 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import {
   updateSpecificationSchema,
   validateSpecificationStatusTransition,
@@ -15,7 +15,8 @@ export async function GET(
   }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user && !guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -27,7 +28,7 @@ export async function GET(
     .from('projects')
     .select('id')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -113,7 +114,8 @@ export async function PATCH(
   }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -125,7 +127,7 @@ export async function PATCH(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -268,7 +270,7 @@ export async function PATCH(
         const junctionRows = safeToAdd.map((reqId) => ({
           specification_id: specificationId,
           requirement_id: reqId,
-          owner_id: user.id,
+          owner_id: user!.id,
         }));
 
         const { error: junctionInsertError } = await supabase
@@ -350,7 +352,8 @@ export async function DELETE(
   }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -362,7 +365,7 @@ export async function DELETE(
     .from('projects')
     .select('id')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 

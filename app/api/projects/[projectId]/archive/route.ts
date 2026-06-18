@@ -1,4 +1,4 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import { buildProjectResponse } from '@/lib/helpers/project-response';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -11,7 +11,8 @@ export async function POST(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -32,7 +33,7 @@ export async function POST(
     .from('projects')
     .select('*')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 

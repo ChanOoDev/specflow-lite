@@ -1,4 +1,4 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import {
   updateTaskSchema,
   validateTaskStatusTransition,
@@ -11,7 +11,8 @@ export async function GET(
   { params }: { params: Promise<{ projectId: string; specificationId: string; taskId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user && !guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -23,7 +24,7 @@ export async function GET(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -37,7 +38,7 @@ export async function GET(
     .select('id, title')
     .eq('id', specificationId)
     .eq('project_id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -51,7 +52,7 @@ export async function GET(
     .select('*')
     .eq('id', taskId)
     .eq('specification_id', specificationId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -70,7 +71,8 @@ export async function PATCH(
   { params }: { params: Promise<{ projectId: string; specificationId: string; taskId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -82,7 +84,7 @@ export async function PATCH(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -96,7 +98,7 @@ export async function PATCH(
     .select('id, status, title')
     .eq('id', specificationId)
     .eq('project_id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -110,7 +112,7 @@ export async function PATCH(
     .select('*')
     .eq('id', taskId)
     .eq('specification_id', specificationId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -262,7 +264,8 @@ export async function DELETE(
   { params }: { params: Promise<{ projectId: string; specificationId: string; taskId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -274,7 +277,7 @@ export async function DELETE(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -288,7 +291,7 @@ export async function DELETE(
     .select('id, status')
     .eq('id', specificationId)
     .eq('project_id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -302,7 +305,7 @@ export async function DELETE(
     .select('id, position')
     .eq('id', taskId)
     .eq('specification_id', specificationId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 

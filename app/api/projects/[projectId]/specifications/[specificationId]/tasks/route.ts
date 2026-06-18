@@ -1,4 +1,4 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import {
   createTaskSchema,
   taskListQuerySchema,
@@ -11,7 +11,8 @@ export async function GET(
   { params }: { params: Promise<{ projectId: string; specificationId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user && !guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -23,7 +24,7 @@ export async function GET(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -37,7 +38,7 @@ export async function GET(
     .select('id')
     .eq('id', specificationId)
     .eq('project_id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -110,7 +111,8 @@ export async function POST(
   { params }: { params: Promise<{ projectId: string; specificationId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -122,7 +124,7 @@ export async function POST(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -146,7 +148,7 @@ export async function POST(
     .select('id, status')
     .eq('id', specificationId)
     .eq('project_id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -198,7 +200,7 @@ export async function POST(
       title: parsed.data.title.trim(),
       description: parsed.data.description ?? '',
       position: nextPosition,
-      owner_id: user.id, // Will be overridden by trigger, satisfies RLS check
+      owner_id: user!.id, // Will be overridden by trigger, satisfies RLS check
     })
     .select()
     .single();

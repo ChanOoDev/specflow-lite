@@ -1,4 +1,4 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import {
   createRequirementSchema,
   requirementListQuerySchema,
@@ -11,7 +11,8 @@ export async function GET(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user && !guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -23,7 +24,7 @@ export async function GET(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -104,7 +105,8 @@ export async function POST(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -116,7 +118,7 @@ export async function POST(
     .from('projects')
     .select('id, status')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -153,7 +155,7 @@ export async function POST(
       description: parsed.data.description ?? '',
       type: parsed.data.type,
       priority: parsed.data.priority,
-      owner_id: user.id, // Will be overridden by trigger, but satisfies RLS check
+      owner_id: user!.id, // Will be overridden by trigger, but satisfies RLS check
     })
     .select()
     .single();

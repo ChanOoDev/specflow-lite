@@ -4,6 +4,10 @@ import { NextResponse, type NextRequest } from 'next/server';
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
+  // Guest mode — cookie set by "Continue as Guest" button on login page.
+  // Guests bypass auth and can access all pages without restriction.
+  const isGuest = request.cookies.get('guest-mode')?.value === 'true';
+
   // In Vercel, NEXT_PUBLIC_* vars are inlined at build time.
   // If they weren't set during build, skip Supabase auth check.
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -34,8 +38,8 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protect /projects page routes (not API routes)
-  if (!user && request.nextUrl.pathname.startsWith('/projects') && !request.nextUrl.pathname.startsWith('/api')) {
+  // Protect /projects page routes — guests and auth users pass through
+  if (!user && !isGuest && request.nextUrl.pathname.startsWith('/projects') && !request.nextUrl.pathname.startsWith('/api')) {
     const url = request.nextUrl.clone();
     url.pathname = '/auth/login';
     return NextResponse.redirect(url);

@@ -1,11 +1,12 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import { createProjectSchema, projectListQuerySchema } from '@/lib/validators/project';
 import { buildProjectResponse } from '@/lib/helpers/project-response';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user && !guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -26,8 +27,8 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from('projects')
     .select('*', { count: 'exact' })
-    .eq('owner_id', user.id)
     .is('deleted_at', null);
+  if (!guest) query = query.eq('owner_id', user!.id);
 
   // By default, exclude archived. Show them only if includeArchived is true
   if (!includeArchived) {
@@ -70,8 +71,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const user = await getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
+  const guest = await isGuest();
+  if (!user || guest) {
+    return NextResponse.json(
+      { error: 'UNAUTHORIZED', message: 'Guests cannot create projects. Sign in to continue.' },
+      { status: 401 }
+    );
   }
 
   const body = await request.json();
@@ -90,7 +95,7 @@ export async function POST(request: NextRequest) {
   const { data: existing } = await supabase
     .from('projects')
     .select('id')
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .ilike('name', parsed.data.name)
     .is('deleted_at', null)
     .maybeSingle();
@@ -107,7 +112,7 @@ export async function POST(request: NextRequest) {
     .insert({
       name: parsed.data.name.trim(),
       description: parsed.data.description ?? '',
-      owner_id: user.id,
+      owner_id: user!.id,
     })
     .select()
     .single();

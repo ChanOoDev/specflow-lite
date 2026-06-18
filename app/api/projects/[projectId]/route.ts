@@ -1,4 +1,4 @@
-import { createClient, getUser } from '@/lib/supabase/server';
+import { createClient, getUser, isGuest } from '@/lib/supabase/server';
 import { updateProjectSchema, validateStatusTransition } from '@/lib/validators/project';
 import { buildProjectResponse } from '@/lib/helpers/project-response';
 import { NextRequest, NextResponse } from 'next/server';
@@ -8,7 +8,8 @@ export async function GET(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user && !guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -19,7 +20,7 @@ export async function GET(
     .from('projects')
     .select('*')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -67,7 +68,8 @@ export async function PATCH(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -89,7 +91,7 @@ export async function PATCH(
     .from('projects')
     .select('*')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 
@@ -121,7 +123,7 @@ export async function PATCH(
     const { data: dup } = await supabase
       .from('projects')
       .select('id')
-      .eq('owner_id', user.id)
+      .eq('owner_id', user!.id)
       .ilike('name', parsed.data.name.trim())
       .is('deleted_at', null)
       .neq('id', projectId)
@@ -159,7 +161,8 @@ export async function DELETE(
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   const user = await getUser();
-  if (!user) {
+  const guest = await isGuest();
+  if (!user || guest) {
     return NextResponse.json({ error: 'UNAUTHORIZED' }, { status: 401 });
   }
 
@@ -171,7 +174,7 @@ export async function DELETE(
     .from('projects')
     .select('id, deleted_at')
     .eq('id', projectId)
-    .eq('owner_id', user.id)
+    .eq('owner_id', user!.id)
     .is('deleted_at', null)
     .single();
 

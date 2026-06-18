@@ -15,6 +15,19 @@ export async function createClient() {
     );
   }
 
+  // Guest mode — use admin client to bypass RLS so guests see all data
+  if (cookieStore.get('guest-mode')?.value === 'true') {
+    const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (serviceRole) {
+      return createServerClient(url, serviceRole, {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll() {}, // no-op: admin client doesn't need to write cookies
+        },
+      });
+    }
+  }
+
   return createServerClient(url, key, {
     cookies: {
       getAll() {
@@ -33,6 +46,14 @@ export async function createClient() {
   });
 }
 
+/**
+ * Check if the current request is from a guest user.
+ */
+export async function isGuest(): Promise<boolean> {
+  const cookieStore = await cookies();
+  return cookieStore.get('guest-mode')?.value === 'true';
+}
+
 export async function getSession() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getSession();
@@ -40,6 +61,9 @@ export async function getSession() {
 }
 
 export async function getUser() {
+  // Guest users have no Supabase user
+  if (await isGuest()) return null;
+
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   return data.user;
