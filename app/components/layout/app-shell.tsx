@@ -12,21 +12,36 @@ import type { User } from '@supabase/supabase-js';
 
 function UserMenu() {
   const router = useRouter();
-  const supabase = createClient();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [user, setUser] = useState<User | null>(null);
+  const [clientError, setClientError] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) setUser(data.user);
-    });
+    let cancelled = false;
+    try {
+      const supabase = createClient();
+      supabase.auth.getUser().then(({ data }) => {
+        if (!cancelled && data.user) setUser(data.user);
+      }).catch(() => {
+        if (!cancelled) setClientError(true);
+      });
+    } catch {
+      if (!cancelled) setClientError(true);
+    }
+    return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/auth/login');
-    router.refresh();
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      router.push('/auth/login');
+      router.refresh();
+    } catch {
+      // Silently fail — user is already logged out
+      router.push('/auth/login');
+    }
   };
 
   const initials = user?.email
