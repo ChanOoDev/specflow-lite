@@ -3,7 +3,7 @@
 **AI-assisted spec-driven development assistant** — built entirely with AI agents, skills, and MCP tools.
 
 🔗 **Demo:** [specflow-lite.vercel.app](https://specflow-lite.vercel.app)  
-📊 **Slides:** [PechaKucha 6×20](https://github.com/ChanOoDev/specflow-lite/blob/main/slides/pechakucha-6x20.md)
+📊 **Slides:** [specflow-lite Slides](https://github.com/ChanOoDev/specflow-lite/blob/main/slides/pechakucha-6x20.md)
 
 ---
 

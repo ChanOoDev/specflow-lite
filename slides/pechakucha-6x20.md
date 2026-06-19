@@ -1,4 +1,4 @@
-# SpecFlow Lite — PechaKucha 6×20
+# SpecFlow Lite
 
 ---
 
