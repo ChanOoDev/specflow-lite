@@ -1,4 +1,14 @@
 {
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7",
+    "github",
+    "playwright",
+    "magic-ui",
+    "sequential-thinking",
+    "swarmvault",
+    "supabase"
+  ],
   "hooks": {
     "SessionStart": [
       {
