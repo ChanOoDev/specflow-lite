@@ -15,7 +15,7 @@ Every feature followed a strict specification-first pipeline: requirement analys
 
 ### MCP
 - path: .mcp.json
-- what: SwarmVault MCP server — automated code graph compilation, graph-first search, wiki management, blast radius analysis, and call graph traversal. Redirected ~80% of broad file searches to targeted structural queries, saving tokens and improving answer quality across all 6 AI agents.
+- what: Context7 (real-time library documentation for Next.js 16, Supabase, Mantine UI 9.3, TanStack Query 5, Zod 4), Playwright (browser automation and UI verification for 100 E2E tests), and SwarmVault (code graph). Context7 was the most critical — it ensured every API call, component, and hook matched the actual library versions rather than hallucinated signatures. Used by Architect, Developer, and Security agents across all 7 feature cycles.
 
 ### Skill
 - path: .claude/skills/spec-kit-skill.md
