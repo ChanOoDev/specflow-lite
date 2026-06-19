@@ -3,7 +3,7 @@
 github_username: ChanOoDev
 personal_repo_url: https://github.com/ChanOoDev/specflow-lite
 project_summary: SpecFlow Lite — AI-assisted spec-driven development assistant built with 6 specialized AI agents, 18 skills, and 8 MCP tools across 7 feature cycles.
-slides_url: slides/pechakucha-6x20.md
+slides_url: https://github.com/ChanOoDev/specflow-lite/blob/main/slides/pechakucha-6x20.md
 
 ## Methodology
 <!-- How you worked: project-based approach + your git workflow (commit as you build). 2-4 sentences. -->
