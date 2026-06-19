@@ -3,7 +3,7 @@ marp: true
 theme: default
 paginate: true
 size: 16:9
-auto_advance: 20
+auto-advance: 20
 ---
 
 # SpecFlow Lite
