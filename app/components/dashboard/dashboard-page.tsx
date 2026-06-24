@@ -8,13 +8,14 @@ import { SummaryCards } from './summary-cards';
 import { RecentProjects } from './recent-projects';
 import { OpenTasks } from './open-tasks';
 import { DashboardEmpty } from './dashboard-empty';
+import { DashboardSkeleton } from './dashboard-skeleton';
 
 export function DashboardPage() {
   const { data, isLoading, isError, refetch, isFetching } = useDashboard();
   const { recentProjects } = useRecentProjects();
 
   if (isLoading) {
-    return null;
+    return <DashboardSkeleton />;
   }
 
   if (isError) {

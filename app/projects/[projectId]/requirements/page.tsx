@@ -3,6 +3,7 @@
 import { Container, Stack, Title } from '@mantine/core';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { RequirementList } from '@/app/components/requirements/requirement-list';
+import { RequirementListSkeleton } from '@/app/components/requirements/requirement-list-skeleton';
 import { useRequirements } from '@/lib/hooks/use-requirements';
 import { useState, useCallback, Suspense } from 'react';
 
@@ -80,6 +81,10 @@ function RequirementsPageContent() {
     [updateParams]
   );
 
+  if (isLoading) {
+    return <RequirementListSkeleton />;
+  }
+
   return (
     <Container size="lg" py="md">
       <Stack>
@@ -107,7 +112,7 @@ function RequirementsPageContent() {
 
 export default function RequirementsPage() {
   return (
-    <Suspense fallback={<Container size="lg" py="md"><Stack><Title order={2}>Requirements</Title></Stack></Container>}>
+    <Suspense fallback={<RequirementListSkeleton />}>
       <RequirementsPageContent />
     </Suspense>
   );

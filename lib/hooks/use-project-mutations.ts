@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import type { ProjectWithCounts } from '@/lib/types/project';
 
@@ -64,7 +65,11 @@ export function useCreateProject() {
   return useMutation({
     mutationFn: createProject,
     onSuccess: (data) => {
+      notifications.show({ title: 'Project created', message: `"${data.name}" has been created successfully.`, color: 'green' });
       router.push(`/projects/${data.id}`);
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to create project', message: error.message, color: 'red' });
     },
   });
 }
@@ -75,8 +80,12 @@ export function useUpdateProject(projectId: string) {
   return useMutation({
     mutationFn: (data: Record<string, unknown>) => updateProject(projectId, data),
     onSuccess: () => {
+      notifications.show({ title: 'Project updated', message: 'Project has been updated successfully.', color: 'green' });
       queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to update project', message: error.message, color: 'red' });
     },
   });
 }
@@ -101,6 +110,7 @@ export function useArchiveProject() {
       return { previous };
     },
     onError: (_err, _projectId, context) => {
+      notifications.show({ title: 'Failed to archive project', message: _err.message, color: 'red' });
       if (context?.previous) {
         queryClient.setQueryData(['projects'], context.previous);
       }
@@ -131,6 +141,7 @@ export function useRestoreProject() {
       return { previous };
     },
     onError: (_err, _projectId, context) => {
+      notifications.show({ title: 'Failed to restore project', message: _err.message, color: 'red' });
       if (context?.previous) {
         queryClient.setQueryData(['projects'], context.previous);
       }
@@ -148,8 +159,12 @@ export function useDeleteProject() {
   return useMutation({
     mutationFn: deleteProject,
     onSuccess: () => {
+      notifications.show({ title: 'Project deleted', message: 'Project has been deleted successfully.', color: 'green' });
       queryClient.invalidateQueries({ queryKey: ['projects'] });
       router.push('/projects');
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to delete project', message: error.message, color: 'red' });
     },
   });
 }

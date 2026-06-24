@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Paper, Stack, Title, Alert } from '@mantine/core';
+import { Container, Paper, Stack, Title } from '@mantine/core';
 import { RequirementForm } from '@/app/components/requirements/requirement-form';
 import { useCreateRequirement } from '@/lib/hooks/use-requirement-mutations';
 import { useParams } from 'next/navigation';
@@ -14,13 +14,6 @@ export default function NewRequirementPage() {
       <Paper radius="md" p="xl" withBorder>
         <Stack>
           <Title order={2}>New Requirement</Title>
-
-          {createMutation.isError && (
-            <Alert color="red" variant="light">
-              {(createMutation.error as Error)?.message ??
-                'Failed to create requirement'}
-            </Alert>
-          )}
 
           <RequirementForm
             onSubmit={(values) => createMutation.mutate({

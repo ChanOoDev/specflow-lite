@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import type { Task, TaskWithSpec } from '@/lib/types/task';
 
@@ -63,7 +64,8 @@ export function useCreateTask(projectId: string, specificationId: string) {
   return useMutation({
     mutationFn: (data: { title: string; description?: string }) =>
       createTask(projectId, specificationId, data),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      notifications.show({ title: 'Task created', message: `"${data.title}" has been created successfully.`, color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'specifications', specificationId, 'tasks'],
       });
@@ -74,6 +76,9 @@ export function useCreateTask(projectId: string, specificationId: string) {
       router.push(
         `/projects/${projectId}/specifications/${specificationId}/tasks`
       );
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to create task', message: error.message, color: 'red' });
     },
   });
 }
@@ -89,6 +94,7 @@ export function useUpdateTask(
     mutationFn: (data: Record<string, unknown>) =>
       updateTask(projectId, specificationId, taskId, data),
     onSuccess: () => {
+      notifications.show({ title: 'Task updated', message: 'Task has been updated successfully.', color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'specifications', specificationId, 'tasks'],
       });
@@ -107,6 +113,9 @@ export function useUpdateTask(
         queryKey: ['projects', projectId, 'specifications', specificationId],
       });
     },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to update task', message: error.message, color: 'red' });
+    },
   });
 }
 
@@ -117,6 +126,7 @@ export function useDeleteTask(projectId: string, specificationId: string) {
     mutationFn: (taskId: string) =>
       deleteTask(projectId, specificationId, taskId),
     onSuccess: () => {
+      notifications.show({ title: 'Task deleted', message: 'Task has been deleted successfully.', color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'specifications', specificationId, 'tasks'],
       });
@@ -124,6 +134,9 @@ export function useDeleteTask(projectId: string, specificationId: string) {
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'specifications', specificationId],
       });
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to delete task', message: error.message, color: 'red' });
     },
   });
 }

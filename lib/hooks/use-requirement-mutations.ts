@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import type { Requirement } from '@/lib/types/requirement';
 
@@ -61,12 +62,16 @@ export function useCreateRequirement(projectId: string) {
       type: string;
       priority: string;
     }) => createRequirement(projectId, data),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      notifications.show({ title: 'Requirement created', message: `"${data.title}" has been created successfully.`, color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'requirements'],
       });
       queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
       router.push(`/projects/${projectId}/requirements`);
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to create requirement', message: error.message, color: 'red' });
     },
   });
 }
@@ -78,12 +83,16 @@ export function useUpdateRequirement(projectId: string, requirementId: string) {
     mutationFn: (data: Record<string, unknown>) =>
       updateRequirement(projectId, requirementId, data),
     onSuccess: () => {
+      notifications.show({ title: 'Requirement updated', message: 'Requirement has been updated successfully.', color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'requirements'],
       });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'requirements', requirementId],
       });
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to update requirement', message: error.message, color: 'red' });
     },
   });
 }
@@ -95,10 +104,14 @@ export function useDeleteRequirement(projectId: string) {
     mutationFn: (requirementId: string) =>
       deleteRequirement(projectId, requirementId),
     onSuccess: () => {
+      notifications.show({ title: 'Requirement deleted', message: 'Requirement has been deleted successfully.', color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'requirements'],
       });
       queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to delete requirement', message: error.message, color: 'red' });
     },
   });
 }

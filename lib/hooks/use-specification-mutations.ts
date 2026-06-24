@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import type { Specification, SpecificationWithLinks } from '@/lib/types/specification';
 
@@ -64,12 +65,16 @@ export function useCreateSpecification(projectId: string) {
       description?: string;
       linked_requirement_ids?: string[];
     }) => createSpecification(projectId, data),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      notifications.show({ title: 'Specification created', message: `"${data.title}" has been created successfully.`, color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'specifications'],
       });
       queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
       router.push(`/projects/${projectId}/specifications`);
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to create specification', message: error.message, color: 'red' });
     },
   });
 }
@@ -84,6 +89,7 @@ export function useUpdateSpecification(
     mutationFn: (data: Record<string, unknown>) =>
       updateSpecification(projectId, specificationId, data),
     onSuccess: () => {
+      notifications.show({ title: 'Specification updated', message: 'Specification has been updated successfully.', color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'specifications'],
       });
@@ -96,6 +102,9 @@ export function useUpdateSpecification(
         ],
       });
     },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to update specification', message: error.message, color: 'red' });
+    },
   });
 }
 
@@ -106,10 +115,14 @@ export function useDeleteSpecification(projectId: string) {
     mutationFn: (specificationId: string) =>
       deleteSpecification(projectId, specificationId),
     onSuccess: () => {
+      notifications.show({ title: 'Specification deleted', message: 'Specification has been deleted successfully.', color: 'green' });
       queryClient.invalidateQueries({
         queryKey: ['projects', projectId, 'specifications'],
       });
       queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
+    },
+    onError: (error) => {
+      notifications.show({ title: 'Failed to delete specification', message: error.message, color: 'red' });
     },
   });
 }

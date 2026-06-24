@@ -76,6 +76,12 @@ export function ProjectForm({
       })}
     >
       <Stack>
+        {error && (
+          <Alert color="red" variant="light">
+            {error}
+          </Alert>
+        )}
+
         <TextInput
           label="Project Name"
           placeholder="My Project"
@@ -99,12 +105,6 @@ export function ProjectForm({
             data={statusOptions}
             {...form.getInputProps('status')}
           />
-        )}
-
-        {error && (
-          <Alert color="red" variant="light">
-            {error}
-          </Alert>
         )}
 
         <Button type="submit" loading={loading}>
