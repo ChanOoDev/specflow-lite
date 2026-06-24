@@ -1,12 +1,14 @@
 'use client';
 
-import { AppShell, Burger, Group, Title, Menu, ActionIcon, Avatar, Text, Stack } from '@mantine/core';
+import { AppShell, Burger, Group, Title, Menu, ActionIcon, Avatar, Text, Breadcrumbs, Anchor } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconUser, IconLogout, IconMoon, IconSun } from '@tabler/icons-react';
+import { IconLogout, IconMoon, IconSun, IconHome, IconUser } from '@tabler/icons-react';
 import { useMantineColorScheme } from '@mantine/core';
 import { Navbar } from './navbar';
 import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import type { User } from '@supabase/supabase-js';
 
 function UserMenu() {
@@ -56,9 +58,7 @@ function UserMenu() {
     }
   };
 
-  const initials = isGuest
-    ? '👤'
-    : user?.email
+  const initials = user?.email
     ? user.email.substring(0, 2).toUpperCase()
     : '?';
   const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
@@ -71,6 +71,10 @@ function UserMenu() {
         <ActionIcon variant="subtle" radius="xl" size="lg">
           {avatarUrl ? (
             <Avatar src={avatarUrl} size={28} radius="xl" />
+          ) : isGuest ? (
+            <Avatar color="blue" radius="xl" size={28}>
+              <IconUser size={18} stroke={1.5} />
+            </Avatar>
           ) : (
             <Avatar color="blue" radius="xl" size={28}>
               {initials}
@@ -124,12 +128,57 @@ function UserMenu() {
   );
 }
 
+function AppBreadcrumbs() {
+  const pathname = usePathname();
+  const segments = pathname.split('/').filter(Boolean);
+
+  if (segments.length === 0) return null;
+
+  const items: React.ReactNode[] = [
+    <Anchor component={Link} href="/" key="home" size="sm">
+      <IconHome size={14} />
+    </Anchor>,
+  ];
+
+  let path = '';
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i];
+    if (!segment) continue;
+    path += `/${segment}`;
+    const isLast = i === segments.length - 1;
+    const label = segment
+      .replace(/\[([^\]]+)\]/g, '') // Remove dynamic segments
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+
+    if (!label) continue;
+
+    items.push(
+      isLast ? (
+        <Text size="sm" fw={500} key={path}>
+          {label}
+        </Text>
+      ) : (
+        <Anchor component={Link} href={path} key={path} size="sm">
+          {label}
+        </Anchor>
+      )
+    );
+  }
+
+  return (
+    <Breadcrumbs separator="›" separatorMargin={4}>
+      {items}
+    </Breadcrumbs>
+  );
+}
+
 export function AppShellLayout({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
 
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 48 }}
       navbar={{
         width: 240,
         breakpoint: 'sm',
@@ -137,21 +186,52 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
       }}
       padding="md"
     >
+      {/* Skip link for keyboard navigation */}
+      <Anchor
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          top: -40,
+          left: 0,
+          zIndex: 1000,
+          padding: '8px 16px',
+          background: 'var(--mantine-color-blue-filled)',
+          color: 'white',
+        }}
+        onFocus={(e) => {
+          (e.currentTarget as HTMLElement).style.top = '0';
+        }}
+        onBlur={(e) => {
+          (e.currentTarget as HTMLElement).style.top = '-40px';
+        }}
+      >
+        Skip to main content
+      </Anchor>
+
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
-          <Group>
-            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-            <Title order={3}>SpecFlow Lite</Title>
+          <Group gap="md">
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="sm"
+              size="sm"
+              aria-label={opened ? 'Close navigation' : 'Open navigation'}
+            />
+            <Title order={4}>SpecFlow Lite</Title>
+            <AppBreadcrumbs />
           </Group>
           <UserMenu />
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p="md">
+      <AppShell.Navbar p="md" role="navigation" aria-label="Main navigation">
         <Navbar />
       </AppShell.Navbar>
 
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main id="main-content" role="main">
+        {children}
+      </AppShell.Main>
     </AppShell>
   );
 }
