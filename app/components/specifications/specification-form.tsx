@@ -39,19 +39,14 @@ interface SpecificationFormProps {
     title: string;
     description: string;
   };
-  /** Current specification status — only needed in edit mode */
   currentStatus?: string;
-  /** Allowed status transitions for the current status */
   allowedTransitions?: string[];
-  /** Currently linked requirement IDs (edit mode) */
   currentLinkedRequirementIds?: string[];
-  /** Currently linked requirements (edit mode detail) */
   currentLinkedRequirements?: LinkedRequirement[];
   onSubmit: (values: SpecificationFormValues) => void | Promise<void>;
   submitLabel?: string;
   loading?: boolean;
   error?: string | null;
-  /** Hide requirement linking (only used on create) */
   hideRequirementLinking?: boolean;
 }
 

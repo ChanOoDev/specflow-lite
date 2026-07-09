@@ -55,7 +55,12 @@ function ProjectSubNav() {
             leftSection={<IconFileText size={16} />}
             rightSection={
               !isLoading && project?.counts?.requirements != null ? (
-                <Badge size="xs" variant="light" color={activeTab === 'requirements' ? 'blue' : 'gray'} ml={4}>
+                <Badge
+                  size="xs"
+                  variant="light"
+                  color={activeTab === 'requirements' ? 'sage' : 'gray'}
+                  ml={4}
+                >
                   {project.counts.requirements}
                 </Badge>
               ) : undefined
@@ -68,7 +73,12 @@ function ProjectSubNav() {
             leftSection={<IconListCheck size={16} />}
             rightSection={
               !isLoading && project?.counts?.specifications != null ? (
-                <Badge size="xs" variant="light" color={activeTab === 'specifications' ? 'blue' : 'gray'} ml={4}>
+                <Badge
+                  size="xs"
+                  variant="light"
+                  color={activeTab === 'specifications' ? 'sage' : 'gray'}
+                  ml={4}
+                >
                   {project.counts.specifications}
                 </Badge>
               ) : undefined

@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Paper, Stack, Text, Button, Center } from '@mantine/core';
+import { Container, Paper, Stack, Title, Text, Button, Center } from '@mantine/core';
 import { IconFileDescription } from '@tabler/icons-react';
 import Link from 'next/link';
 
@@ -19,9 +19,7 @@ export function SpecificationEmptyState({
         <Paper radius="md" p="xl" withBorder>
           <Center>
             <Stack align="center" gap="md">
-              <Text size="lg" fw={600}>
-                No specifications match your search
-              </Text>
+              <Title order={4}>No specifications match your search</Title>
               <Text size="sm" c="dimmed" ta="center" maw={400}>
                 Try adjusting your search terms or filters to find what
                 you&apos;re looking for.
@@ -39,16 +37,14 @@ export function SpecificationEmptyState({
         <Center>
           <Stack align="center" gap="md">
             <IconFileDescription
-              size={64}
+              size={48}
               stroke={1.5}
-              color="var(--mantine-color-gray-5)"
+              color="var(--mantine-color-dimmed)"
             />
-            <Text size="lg" fw={600}>
-              No specifications yet
-            </Text>
+            <Title order={4}>No specifications yet</Title>
             <Text size="sm" c="dimmed" ta="center" maw={400}>
-              Create your first specification to start documenting the
-              technical approach for your project.
+              Create your first specification to start documenting the technical
+              approach for your project.
             </Text>
             <Button
               component={Link}

@@ -8,9 +8,9 @@ import type { OpenTask } from '@/lib/types/dashboard';
 function getStatusBadgeColor(status: string): string {
   switch (status) {
     case 'todo':
-      return 'orange';
+      return 'warm';
     case 'in_progress':
-      return 'blue';
+      return 'sage';
     default:
       return 'gray';
   }
@@ -39,7 +39,11 @@ export function OpenTasks({ tasks, totalProjects }: OpenTasksProps) {
         <Title order={4}>Open Tasks</Title>
         <Paper radius="md" p="md" withBorder>
           <Group gap="xs">
-            <IconCheck size={20} stroke={1.5} color="var(--mantine-color-green-6)" />
+            <IconCheck
+              size={20}
+              stroke={1.5}
+              color="var(--mantine-color-green-6)"
+            />
             <Text c="dimmed" size="sm">
               All tasks completed
             </Text>

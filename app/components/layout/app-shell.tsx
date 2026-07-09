@@ -1,8 +1,25 @@
 'use client';
 
-import { AppShell, Burger, Group, Title, Menu, ActionIcon, Avatar, Text, Breadcrumbs, Anchor } from '@mantine/core';
+import {
+  AppShell,
+  Burger,
+  Group,
+  Title,
+  Menu,
+  ActionIcon,
+  Avatar,
+  Text,
+  Breadcrumbs,
+  Anchor,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconLogout, IconMoon, IconSun, IconHome, IconUser } from '@tabler/icons-react';
+import {
+  IconLogout,
+  IconMoon,
+  IconSun,
+  IconHome,
+  IconUser,
+} from '@tabler/icons-react';
 import { useMantineColorScheme } from '@mantine/core';
 import { Navbar } from './navbar';
 import { createClient } from '@/lib/supabase/client';
@@ -15,13 +32,11 @@ function UserMenu() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [user, setUser] = useState<User | null>(null);
   const [isGuest, setIsGuest] = useState(false);
-  const [clientError, setClientError] = useState(false);
 
   useEffect(() => {
-    // Check guest mode first
     const guestCookie = document.cookie
       .split('; ')
-      .find(row => row.startsWith('guest-mode='));
+      .find((row) => row.startsWith('guest-mode='));
     if (guestCookie?.split('=')[1] === 'true') {
       setIsGuest(true);
       return;
@@ -30,22 +45,21 @@ function UserMenu() {
     let cancelled = false;
     try {
       const supabase = createClient();
-      supabase.auth.getUser().then(({ data }) => {
-        if (!cancelled && data.user) setUser(data.user);
-      }).catch(() => {
-        if (!cancelled) setClientError(true);
-      });
-    } catch {
-      if (!cancelled) setClientError(true);
-    }
-    return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      supabase.auth
+        .getUser()
+        .then(({ data }) => {
+          if (!cancelled && data.user) setUser(data.user);
+        })
+        .catch(() => {});
+    } catch {}
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleLogout = async () => {
     try {
       if (isGuest) {
-        // Clear guest cookie
         document.cookie = 'guest-mode=; path=/; max-age=0';
         window.location.href = '/auth/login';
         return;
@@ -62,7 +76,9 @@ function UserMenu() {
     ? user.email.substring(0, 2).toUpperCase()
     : '?';
   const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
-  const displayName = isGuest ? 'Guest' : (user?.user_metadata?.full_name as string | undefined);
+  const displayName = isGuest
+    ? 'Guest'
+    : (user?.user_metadata?.full_name as string | undefined);
   const email = isGuest ? 'Browsing as guest' : user?.email;
 
   return (
@@ -72,11 +88,11 @@ function UserMenu() {
           {avatarUrl ? (
             <Avatar src={avatarUrl} size={28} radius="xl" />
           ) : isGuest ? (
-            <Avatar color="blue" radius="xl" size={28}>
+            <Avatar color="sage" radius="xl" size={28}>
               <IconUser size={18} stroke={1.5} />
             </Avatar>
           ) : (
-            <Avatar color="blue" radius="xl" size={28}>
+            <Avatar color="slate" radius="xl" size={28}>
               {initials}
             </Avatar>
           )}
@@ -135,7 +151,7 @@ function AppBreadcrumbs() {
   if (segments.length === 0) return null;
 
   const items: React.ReactNode[] = [
-    <Anchor component={Link} href="/" key="home" size="sm">
+    <Anchor component={Link} href="/" key="home" size="sm" c="dimmed">
       <IconHome size={14} />
     </Anchor>,
   ];
@@ -147,7 +163,7 @@ function AppBreadcrumbs() {
     path += `/${segment}`;
     const isLast = i === segments.length - 1;
     const label = segment
-      .replace(/\[([^\]]+)\]/g, '') // Remove dynamic segments
+      .replace(/\[([^\]]+)\]/g, '')
       .replace(/-/g, ' ')
       .replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -159,7 +175,7 @@ function AppBreadcrumbs() {
           {label}
         </Text>
       ) : (
-        <Anchor component={Link} href={path} key={path} size="sm">
+        <Anchor component={Link} href={path} key={path} size="sm" c="dimmed">
           {label}
         </Anchor>
       )
@@ -167,7 +183,7 @@ function AppBreadcrumbs() {
   }
 
   return (
-    <Breadcrumbs separator="›" separatorMargin={4}>
+    <Breadcrumbs separator="/" separatorMargin={4}>
       {items}
     </Breadcrumbs>
   );
@@ -178,15 +194,14 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <AppShell
-      header={{ height: 48 }}
+      header={{ height: 52 }}
       navbar={{
-        width: 240,
+        width: 220,
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
       }}
       padding="md"
     >
-      {/* Skip link for keyboard navigation */}
       <Anchor
         href="#main-content"
         style={{
@@ -195,7 +210,7 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
           left: 0,
           zIndex: 1000,
           padding: '8px 16px',
-          background: 'var(--mantine-color-blue-filled)',
+          background: 'var(--mantine-color-sage-filled)',
           color: 'white',
         }}
         onFocus={(e) => {
@@ -208,7 +223,11 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
         Skip to main content
       </Anchor>
 
-      <AppShell.Header>
+      <AppShell.Header
+        style={{
+          borderBottom: '1px solid var(--mantine-color-default-border)',
+        }}
+      >
         <Group h="100%" px="md" justify="space-between">
           <Group gap="md">
             <Burger
@@ -218,14 +237,27 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
               size="sm"
               aria-label={opened ? 'Close navigation' : 'Open navigation'}
             />
-            <Title order={4}>SpecFlow Lite</Title>
+            <Title
+              order={4}
+              fw={600}
+              style={{ letterSpacing: '-0.02em' }}
+            >
+              SpecFlow Lite
+            </Title>
             <AppBreadcrumbs />
           </Group>
           <UserMenu />
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p="md" role="navigation" aria-label="Main navigation">
+      <AppShell.Navbar
+        p="md"
+        role="navigation"
+        aria-label="Main navigation"
+        style={{
+          borderRight: '1px solid var(--mantine-color-default-border)',
+        }}
+      >
         <Navbar />
       </AppShell.Navbar>
 

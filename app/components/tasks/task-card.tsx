@@ -23,6 +23,7 @@ export function TaskCard({
       radius="md"
       p="md"
       withBorder
+      className="hover-lift"
       style={{ textDecoration: 'none' }}
     >
       <Group justify="space-between" wrap="nowrap">

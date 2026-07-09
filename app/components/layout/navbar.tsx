@@ -1,7 +1,11 @@
 'use client';
 
-import { NavLink, Stack, Divider } from '@mantine/core';
-import { IconLayoutDashboard, IconFolders, IconInfoCircle } from '@tabler/icons-react';
+import { NavLink, Stack } from '@mantine/core';
+import {
+  IconLayoutDashboard,
+  IconFolders,
+  IconInfoCircle,
+} from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -18,30 +22,52 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <Stack gap="xs">
+    <Stack gap={4}>
       {NAV_ITEMS.map((item) => (
         <NavLink
           key={item.href}
           component={Link}
           href={item.href}
           label={item.label}
-          leftSection={<item.icon size={20} stroke={1.5} />}
-          active={pathname === item.href || pathname.startsWith(item.href + '/')}
-          variant="light"
+          leftSection={<item.icon size={18} stroke={1.5} />}
+          active={
+            pathname === item.href ||
+            (item.href !== '/' && pathname.startsWith(item.href + '/'))
+          }
+          variant="subtle"
+          styles={{
+            root: {
+              borderRadius: 'var(--mantine-radius-md)',
+            },
+            label: {
+              fontSize: '14px',
+              fontWeight: 500,
+            },
+          }}
         />
       ))}
-      <Divider my="xs" />
-      {META_ITEMS.map((item) => (
-        <NavLink
-          key={item.href}
-          component={Link}
-          href={item.href}
-          label={item.label}
-          leftSection={<item.icon size={20} stroke={1.5} />}
-          active={pathname === item.href}
-          variant="light"
-        />
-      ))}
+      <Stack gap={4} mt="md">
+        {META_ITEMS.map((item) => (
+          <NavLink
+            key={item.href}
+            component={Link}
+            href={item.href}
+            label={item.label}
+            leftSection={<item.icon size={18} stroke={1.5} />}
+            active={pathname === item.href}
+            variant="subtle"
+            styles={{
+              root: {
+                borderRadius: 'var(--mantine-radius-md)',
+              },
+              label: {
+                fontSize: '14px',
+                fontWeight: 500,
+              },
+            }}
+          />
+        ))}
+      </Stack>
     </Stack>
   );
 }

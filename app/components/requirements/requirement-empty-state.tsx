@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Paper, Stack, Text, Button, Center } from '@mantine/core';
+import { Container, Paper, Stack, Title, Text, Button, Center } from '@mantine/core';
 import { IconFilePlus } from '@tabler/icons-react';
 import Link from 'next/link';
 
@@ -19,11 +19,10 @@ export function RequirementEmptyState({
         <Paper radius="md" p="xl" withBorder>
           <Center>
             <Stack align="center" gap="md">
-              <Text size="lg" fw={600}>
-                No requirements match your search
-              </Text>
+              <Title order={4}>No requirements match your search</Title>
               <Text size="sm" c="dimmed" ta="center" maw={400}>
-                Try adjusting your search terms or filters to find what you&apos;re looking for.
+                Try adjusting your search terms or filters to find what
+                you&apos;re looking for.
               </Text>
             </Stack>
           </Center>
@@ -37,12 +36,15 @@ export function RequirementEmptyState({
       <Paper radius="md" p="xl" withBorder>
         <Center>
           <Stack align="center" gap="md">
-            <IconFilePlus size={64} stroke={1.5} color="var(--mantine-color-gray-5)" />
-            <Text size="lg" fw={600}>
-              No requirements yet
-            </Text>
+            <IconFilePlus
+              size={48}
+              stroke={1.5}
+              color="var(--mantine-color-dimmed)"
+            />
+            <Title order={4}>No requirements yet</Title>
             <Text size="sm" c="dimmed" ta="center" maw={400}>
-              Add your first requirement to start capturing what needs to be built.
+              Add your first requirement to start capturing what needs to be
+              built.
             </Text>
             <Button
               component={Link}

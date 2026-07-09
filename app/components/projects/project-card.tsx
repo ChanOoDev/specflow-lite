@@ -14,10 +14,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
     <Card
       component={Link}
       href={`/projects/${project.id}`}
-      shadow="sm"
+      shadow="xs"
       padding="md"
       radius="md"
       withBorder
+      className="hover-lift animate-in"
       style={{ textDecoration: 'none', color: 'inherit' }}
     >
       <Stack gap="xs">
@@ -36,8 +37,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
         <Group gap="xl">
           <Text size="xs" c="dimmed">
-            {project.counts.requirements} reqs · {project.counts.specifications} specs ·{' '}
-            {project.counts.tasks} tasks
+            {project.counts.requirements} reqs · {project.counts.specifications}{' '}
+            specs · {project.counts.tasks} tasks
           </Text>
           <Text size="xs" c="dimmed" ml="auto">
             Updated {date}

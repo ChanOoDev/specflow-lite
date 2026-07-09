@@ -8,8 +8,8 @@ import type { Requirement } from '@/lib/types/requirement';
 const STATUS_COLORS: Record<string, string> = {
   draft: 'gray',
   approved: 'green',
-  implemented: 'blue',
-  deferred: 'yellow',
+  implemented: 'sage',
+  deferred: 'warm',
 };
 
 function RequirementStatusBadge({ status }: { status: string }) {
@@ -53,27 +53,35 @@ export function RequirementDetail({ requirement }: RequirementDetailProps) {
       </Group>
 
       <SimpleGrid cols={{ base: 2, sm: 4 }}>
-        <Card shadow="sm" padding="md" radius="md" withBorder>
+        <Card shadow="xs" padding="md" radius="md" withBorder>
           <Stack align="center" gap="xs">
-            <Text size="xs" c="dimmed">Type</Text>
+            <Text size="xs" c="dimmed">
+              Type
+            </Text>
             <TypeBadge type={requirement.type} />
           </Stack>
         </Card>
-        <Card shadow="sm" padding="md" radius="md" withBorder>
+        <Card shadow="xs" padding="md" radius="md" withBorder>
           <Stack align="center" gap="xs">
-            <Text size="xs" c="dimmed">Priority</Text>
+            <Text size="xs" c="dimmed">
+              Priority
+            </Text>
             <PriorityBadge priority={requirement.priority} />
           </Stack>
         </Card>
-        <Card shadow="sm" padding="md" radius="md" withBorder>
+        <Card shadow="xs" padding="md" radius="md" withBorder>
           <Stack align="center" gap="xs">
-            <Text size="xs" c="dimmed">Status</Text>
+            <Text size="xs" c="dimmed">
+              Status
+            </Text>
             <RequirementStatusBadge status={requirement.status} />
           </Stack>
         </Card>
-        <Card shadow="sm" padding="md" radius="md" withBorder>
+        <Card shadow="xs" padding="md" radius="md" withBorder>
           <Stack align="center" gap="xs">
-            <Text size="xs" c="dimmed">Project</Text>
+            <Text size="xs" c="dimmed">
+              Project
+            </Text>
             <Text size="sm" fw={600} c="dimmed">
               {requirement.project_id.slice(0, 8)}...
             </Text>

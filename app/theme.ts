@@ -1,58 +1,66 @@
-
-
-
-
-
-
 import { createTheme, MantineColorsTuple } from '@mantine/core';
 
-// Indigo-based primary — professional, developer-friendly
-const primary: MantineColorsTuple = [
-  '#edf2ff',
-  '#dbe4ff',
-  '#bac8ff',
-  '#91a7ff',
-  '#748ffc',
-  '#5c7cfa',
-  '#4c6ef5',
-  '#4263eb',
-  '#3b5bdb',
-  '#364fc7',
+// Slate blue primary — refined, understated
+const slate: MantineColorsTuple = [
+  '#f8f9fb',
+  '#eef1f5',
+  '#dde2ea',
+  '#c4ccd8',
+  '#a8b3c4',
+  '#8b99b0',
+  '#6e7f9a',
+  '#5a6b84',
+  '#4a5870',
+  '#3d4a5e',
 ];
 
-// Refined slate grays — warmer than Mantine defaults
-const slate: MantineColorsTuple = [
-  '#f8f9fa',
-  '#f1f3f5',
-  '#e9ecef',
-  '#dee2e6',
-  '#ced4da',
-  '#adb5bd',
-  '#868e96',
-  '#495057',
-  '#343a40',
-  '#212529',
+// Sage green accent — warm, natural
+const sage: MantineColorsTuple = [
+  '#f4f7f5',
+  '#e4ebe6',
+  '#c9d7cd',
+  '#a6bfad',
+  '#84a78e',
+  '#689173',
+  '#527a5c',
+  '#436349',
+  '#374f3b',
+  '#2d3f31',
+];
+
+// Warm grays — softer than cold steel
+const warm: MantineColorsTuple = [
+  '#fafaf9',
+  '#f5f4f2',
+  '#eae8e4',
+  '#d9d6d0',
+  '#c4bfb7',
+  '#a9a29a',
+  '#8e857c',
+  '#736a62',
+  '#5c5349',
+  '#463e36',
 ];
 
 export const theme = createTheme({
-  primaryColor: 'primary',
-  colors: { primary, slate },
+  primaryColor: 'slate',
+  colors: { slate, sage, warm },
   defaultRadius: 'md',
 
   fontFamily:
-    'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
   headings: {
     fontFamily:
-      'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     fontWeight: '600',
   },
 
   shadows: {
-    xs: '0 1px 2px rgba(0, 0, 0, 0.05)',
-    sm: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    xs: '0 1px 2px rgba(0, 0, 0, 0.04)',
+    sm: '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
+    md: '0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04)',
+    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.04)',
+    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.06), 0 10px 10px -5px rgba(0, 0, 0, 0.03)',
   },
 
   spacing: {
@@ -66,7 +74,7 @@ export const theme = createTheme({
   components: {
     Card: {
       defaultProps: {
-        shadow: 'sm',
+        shadow: 'xs',
         radius: 'md',
         padding: 'lg',
       },
@@ -80,7 +88,7 @@ export const theme = createTheme({
     Paper: {
       defaultProps: {
         radius: 'md',
-        shadow: 'sm',
+        shadow: 'xs',
       },
     },
     TextInput: {

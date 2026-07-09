@@ -2,9 +2,9 @@ import { Badge } from '@mantine/core';
 
 const STATUS_COLORS: Record<string, string> = {
   active: 'green',
-  paused: 'yellow',
-  completed: 'blue',
-  archived: 'gray',
+  paused: 'warm',
+  completed: 'sage',
+  archived: 'slate',
 };
 
 interface StatusBadgeProps {

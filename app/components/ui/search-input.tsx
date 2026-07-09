@@ -22,22 +22,28 @@ export function SearchInput({
     setLocal(value);
   }, [value]);
 
-  const handleChange = useCallback((val: string) => {
-    setLocal(val);
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => onChange(val), 200);
-  }, [onChange]);
+  const handleChange = useCallback(
+    (val: string) => {
+      setLocal(val);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => onChange(val), 200);
+    },
+    [onChange]
+  );
 
   const handleClear = useCallback(() => {
     setLocal('');
     onChange('');
   }, [onChange]);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      handleClear();
-    }
-  }, [handleClear]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClear();
+      }
+    },
+    [handleClear]
+  );
 
   return (
     <TextInput
