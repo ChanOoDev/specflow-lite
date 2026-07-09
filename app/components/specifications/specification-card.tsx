@@ -20,10 +20,11 @@ export function SpecificationCard({
     <Card
       component={Link}
       href={`/projects/${projectId}/specifications/${specification.id}`}
-      shadow="sm"
+      shadow="xs"
       padding="md"
       radius="md"
       withBorder
+      className="hover-lift animate-in"
       style={{ textDecoration: 'none', color: 'inherit' }}
     >
       <Stack gap="xs">

@@ -19,37 +19,37 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       label: 'Total Projects',
       value: summary.totalProjects,
       icon: IconFolders,
-      color: 'blue',
+      color: 'sage',
     },
     {
       label: 'Requirements',
       value: summary.totalRequirements,
       icon: IconFileText,
-      color: 'violet',
+      color: 'slate',
     },
     {
       label: 'Specifications',
       value: summary.totalSpecifications,
       icon: IconListCheck,
-      color: 'teal',
+      color: 'slate',
     },
     {
       label: 'Tasks',
       value: (
         <Group gap={4} justify="center" wrap="nowrap">
-          <Badge size="xs" variant="light" color="orange">
+          <Badge size="sm" variant="light" color="warm">
             {summary.tasksByStatus.todo}
           </Badge>
-          <Badge size="xs" variant="light" color="blue">
+          <Badge size="sm" variant="light" color="sage">
             {summary.tasksByStatus.in_progress}
           </Badge>
-          <Badge size="xs" variant="light" color="green">
+          <Badge size="sm" variant="light" color="green">
             {summary.tasksByStatus.done}
           </Badge>
         </Group>
       ),
       icon: IconCheckbox,
-      color: 'orange',
+      color: 'warm',
       isStatusCard: true,
     },
   ];
@@ -57,13 +57,24 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
   return (
     <SimpleGrid cols={{ base: 2, sm: 4 }}>
       {cards.map((card) => (
-        <Card key={card.label} shadow="sm" padding="md" radius="md" withBorder>
+        <Card
+          key={card.label}
+          shadow="xs"
+          padding="md"
+          radius="md"
+          withBorder
+          className="animate-in"
+        >
           <Stack align="center" gap="xs">
-            <card.icon size={24} stroke={1.5} color={`var(--mantine-color-${card.color}-6)`} />
+            <card.icon
+              size={22}
+              stroke={1.5}
+              color={`var(--mantine-color-${card.color}-6)`}
+            />
             {card.isStatusCard ? (
               <>{card.value}</>
             ) : (
-              <Text size="xl" fw={700}>
+              <Text size="xl" fw={600}>
                 {card.value}
               </Text>
             )}

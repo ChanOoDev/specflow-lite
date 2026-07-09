@@ -9,8 +9,8 @@ import type { Requirement } from '@/lib/types/requirement';
 const STATUS_COLORS: Record<string, string> = {
   draft: 'gray',
   approved: 'green',
-  implemented: 'blue',
-  deferred: 'yellow',
+  implemented: 'sage',
+  deferred: 'warm',
 };
 
 function RequirementStatusBadge({ status }: { status: string }) {
@@ -26,17 +26,21 @@ interface RequirementCardProps {
   projectId: string;
 }
 
-export function RequirementCard({ requirement, projectId }: RequirementCardProps) {
+export function RequirementCard({
+  requirement,
+  projectId,
+}: RequirementCardProps) {
   const date = new Date(requirement.updated_at).toLocaleDateString();
 
   return (
     <Card
       component={Link}
       href={`/projects/${projectId}/requirements/${requirement.id}`}
-      shadow="sm"
+      shadow="xs"
       padding="md"
       radius="md"
       withBorder
+      className="hover-lift animate-in"
       style={{ textDecoration: 'none', color: 'inherit' }}
     >
       <Stack gap="xs">

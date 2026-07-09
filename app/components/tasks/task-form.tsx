@@ -44,9 +44,7 @@ interface TaskFormProps {
     description: string;
     position?: number;
   };
-  /** Current task status — only needed in edit mode */
   currentStatus?: TaskStatus;
-  /** Whether this is an edit form (shows status + position fields) */
   isEdit?: boolean;
   onSubmit: (values: TaskFormValues) => void | Promise<void>;
   submitLabel?: string;
@@ -90,10 +88,19 @@ export function TaskForm({
           title: values.title,
           description: values.description,
         };
-        if (isEdit && currentStatus && values.status && values.status !== currentStatus) {
+        if (
+          isEdit &&
+          currentStatus &&
+          values.status &&
+          values.status !== currentStatus
+        ) {
           payload.status = values.status;
         }
-        if (isEdit && values.position !== undefined && values.position !== initialValues.position) {
+        if (
+          isEdit &&
+          values.position !== undefined &&
+          values.position !== initialValues.position
+        ) {
           payload.position = values.position;
         }
         onSubmit(payload);

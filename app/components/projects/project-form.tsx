@@ -27,9 +27,7 @@ interface ProjectFormProps {
     name: string;
     description: string;
   };
-  /** Current project status — only needed in edit mode */
   currentStatus?: string;
-  /** Allowed status transitions for the current status */
   allowedTransitions?: string[];
   onSubmit: (values: ProjectFormValues) => void | Promise<void>;
   submitLabel?: string;
@@ -60,7 +58,8 @@ export function ProjectForm({
       label: s.charAt(0).toUpperCase() + s.slice(1),
     })) ?? [];
 
-  const isEditMode = !!currentStatus && allowedTransitions && allowedTransitions.length > 0;
+  const isEditMode =
+    !!currentStatus && allowedTransitions && allowedTransitions.length > 0;
 
   return (
     <form

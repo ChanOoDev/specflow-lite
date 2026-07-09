@@ -4,10 +4,10 @@ import { Badge } from '@mantine/core';
 
 const STATUS_COLORS: Record<string, string> = {
   draft: 'gray',
-  in_progress: 'blue',
+  in_progress: 'sage',
   completed: 'green',
-  approved: 'teal',
-  archived: 'yellow',
+  approved: 'slate',
+  archived: 'warm',
 };
 
 interface SpecStatusBadgeProps {

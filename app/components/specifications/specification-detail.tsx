@@ -25,12 +25,13 @@ function RequirementLinkCard({
 }) {
   return (
     <Card
-      shadow="sm"
+      shadow="xs"
       padding="sm"
       radius="md"
       withBorder
       component={Link}
       href={`/projects/${projectId}/requirements/${requirement.id}`}
+      className="hover-lift"
       style={{ cursor: 'pointer' }}
     >
       <Group justify="space-between" wrap="nowrap">
@@ -94,7 +95,11 @@ export function SpecificationDetail({
         ) : (
           <Stack gap="sm">
             {specification.linked_requirements.map((req) => (
-              <RequirementLinkCard key={req.id} requirement={req} projectId={projectId} />
+              <RequirementLinkCard
+                key={req.id}
+                requirement={req}
+                projectId={projectId}
+              />
             ))}
           </Stack>
         )}

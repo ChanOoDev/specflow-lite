@@ -4,7 +4,7 @@ import { Badge } from '@mantine/core';
 
 const STATUS_COLORS: Record<string, string> = {
   todo: 'gray',
-  in_progress: 'blue',
+  in_progress: 'sage',
   done: 'green',
 };
 

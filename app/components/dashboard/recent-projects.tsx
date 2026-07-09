@@ -1,19 +1,19 @@
 'use client';
 
-import { SimpleGrid, Card, Stack, Text, Group, Badge, Title, Tooltip } from '@mantine/core';
+import { SimpleGrid, Card, Stack, Text, Group, Tooltip, Badge } from '@mantine/core';
 import Link from 'next/link';
 import type { RecentProject } from '@/lib/types/dashboard';
 
-function getStatusColor(status: string): string {
+function getStatusColor(status?: string): string {
   switch (status) {
     case 'active':
       return 'green';
     case 'paused':
-      return 'yellow';
+      return 'warm';
     case 'completed':
-      return 'blue';
+      return 'sage';
     case 'archived':
-      return 'gray';
+      return 'slate';
     default:
       return 'gray';
   }
@@ -28,21 +28,27 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
 
   return (
     <Stack gap="xs">
-      <Title order={4}>Recent Projects</Title>
+      <Text size="sm" fw={600} c="dimmed">
+        Recent Projects
+      </Text>
       <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
         {projects.map((p) => (
           <Card
             key={p.projectId}
             component={Link}
             href={`/projects/${p.projectId}`}
-            shadow="sm"
+            shadow="xs"
             padding="md"
             radius="md"
             withBorder
+            className="hover-lift animate-in"
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
             <Stack gap="xs">
-              <Tooltip label={p.projectName} disabled={p.projectName.length < 30}>
+              <Tooltip
+                label={p.projectName}
+                disabled={p.projectName.length < 30}
+              >
                 <Text fw={600} size="sm" truncate>
                   {p.projectName}
                 </Text>

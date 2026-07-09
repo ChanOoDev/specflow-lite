@@ -6,15 +6,15 @@ import Link from 'next/link';
 
 export function DashboardEmpty() {
   return (
-    <Container size="md" py="xl">
+    <Container size="sm" py="xl">
       <Paper radius="md" p="xl" withBorder>
         <Center>
           <Stack align="center" gap="md">
             <Title order={3}>Welcome to SpecFlow Lite</Title>
             <Text c="dimmed" ta="center" maw={400}>
               You don&apos;t have any projects yet. Create your first project to
-              start capturing requirements, generating specifications, and tracking
-              development tasks.
+              start capturing requirements, generating specifications, and
+              tracking development tasks.
             </Text>
             <Button
               component={Link}

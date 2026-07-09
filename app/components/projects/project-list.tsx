@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useCallback } from 'react';
 import { SimpleGrid, Group, Pagination, Button, Stack } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { ProjectCard } from './project-card';
@@ -74,7 +73,11 @@ export function ProjectList({
 
           {totalPages > 1 && (
             <Group justify="center" mt="md">
-              <Pagination total={totalPages} value={page} onChange={onPageChange} />
+              <Pagination
+                total={totalPages}
+                value={page}
+                onChange={onPageChange}
+              />
             </Group>
           )}
         </>

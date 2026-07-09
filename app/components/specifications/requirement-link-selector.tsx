@@ -27,7 +27,6 @@ interface RequirementLinkSelectorProps {
   projectId: string;
   value: string[];
   onChange: (value: string[]) => void;
-  /** Is the form in create mode vs edit mode */
   mode?: 'create' | 'edit';
 }
 

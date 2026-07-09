@@ -9,7 +9,6 @@ interface TaskDetailProps {
   task: TaskWithSpec;
   projectId: string;
   specificationId: string;
-  /** Whether the spec is approved or project archived (read-only) */
   readOnly?: boolean;
   onDelete?: () => void;
 }

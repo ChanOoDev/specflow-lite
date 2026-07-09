@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useCallback } from 'react';
 import { SimpleGrid, Group, Pagination, Button, Select, Stack } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { RequirementCard } from './requirement-card';

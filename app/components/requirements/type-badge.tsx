@@ -3,9 +3,9 @@
 import { Badge } from '@mantine/core';
 
 const TYPE_COLORS: Record<string, string> = {
-  functional: 'blue',
-  non_functional: 'violet',
-  technical: 'gray',
+  functional: 'sage',
+  non_functional: 'slate',
+  technical: 'warm',
   ux: 'pink',
 };
 

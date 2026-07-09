@@ -42,9 +42,7 @@ interface RequirementFormProps {
     priority: string;
     status?: string;
   };
-  /** Current requirement status — only needed in edit mode */
   currentStatus?: string;
-  /** Allowed status transitions for the current status */
   allowedTransitions?: string[];
   onSubmit: (values: RequirementFormValues) => void | Promise<void>;
   submitLabel?: string;
@@ -68,7 +66,12 @@ const PRIORITY_OPTIONS = [
 ];
 
 export function RequirementForm({
-  initialValues = { title: '', description: '', type: 'functional', priority: 'p3' },
+  initialValues = {
+    title: '',
+    description: '',
+    type: 'functional',
+    priority: 'p3',
+  },
   currentStatus,
   allowedTransitions,
   onSubmit,

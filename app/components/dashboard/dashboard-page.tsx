@@ -24,10 +24,15 @@ export function DashboardPage() {
         <Paper radius="md" p="xl" withBorder>
           <Center>
             <Stack align="center" gap="md">
-              <IconAlertCircle size={40} stroke={1.5} color="var(--mantine-color-red-6)" />
+              <IconAlertCircle
+                size={40}
+                stroke={1.5}
+                color="var(--mantine-color-red-6)"
+              />
               <Title order={3}>Unable to Load Dashboard</Title>
               <Text c="dimmed" ta="center">
-                Something went wrong while fetching your dashboard data. Please try again.
+                Something went wrong while fetching your dashboard data. Please
+                try again.
               </Text>
               <Button
                 variant="subtle"
@@ -44,12 +49,10 @@ export function DashboardPage() {
     );
   }
 
-  // Empty state: user has no projects
   if (!data || data.summary.totalProjects === 0) {
     return <DashboardEmpty />;
   }
 
-  // Enrich recent projects with status from dashboard data
   const projectStatusMap = new Map(
     data.projects.map((p) => [p.id, p.status])
   );
@@ -77,7 +80,10 @@ export function DashboardPage() {
 
         <RecentProjects projects={enrichedRecents} />
 
-        <OpenTasks tasks={data.openTasks} totalProjects={data.summary.totalProjects} />
+        <OpenTasks
+          tasks={data.openTasks}
+          totalProjects={data.summary.totalProjects}
+        />
       </Stack>
     </Container>
   );

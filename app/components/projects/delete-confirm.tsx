@@ -35,10 +35,16 @@ export function DeleteConfirmModal({
   };
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Delete Project" centered>
+    <Modal
+      opened={opened}
+      onClose={handleClose}
+      title="Delete Project"
+      centered
+    >
       <Stack>
         <Alert color="red" icon={<IconAlertTriangle size={20} />}>
-          This action cannot be undone. The project will be soft-deleted and permanently removed after 30 days.
+          This action cannot be undone. The project will be soft-deleted and
+          permanently removed after 30 days.
         </Alert>
 
         <Text size="sm">

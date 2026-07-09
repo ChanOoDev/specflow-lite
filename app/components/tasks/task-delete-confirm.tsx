@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Modal, Text, TextInput, Button, Group, Stack, Alert } from '@mantine/core';
+import {
+  Modal,
+  Text,
+  TextInput,
+  Button,
+  Group,
+  Stack,
+  Alert,
+} from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 
 interface TaskDeleteConfirmProps {
@@ -40,8 +48,8 @@ export function TaskDeleteConfirm({
           icon={<IconAlertTriangle size={16} />}
         >
           <Text size="sm">
-            This will permanently delete this task. This action can be
-            undone within 30 days.
+            This will permanently delete this task. This action can be undone
+            within 30 days.
           </Text>
         </Alert>
 
