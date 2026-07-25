@@ -204,15 +204,13 @@ function SearchPageContent() {
                               {result.type}
                             </Badge>
                             {result.project_name && result.type !== 'project' && (
-                              <Anchor
-                                component={Link}
-                                href={`/projects/${result.project_id}`}
+                              <Text
+                                component="span"
                                 size="xs"
                                 c="dimmed"
-                                onClick={(e) => e.stopPropagation()}
                               >
                                 {result.project_name}
-                              </Anchor>
+                              </Text>
                             )}
                           </Group>
                         </Stack>

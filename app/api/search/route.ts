@@ -13,41 +13,6 @@ interface SearchResult {
   match_rank: number;
 }
 
-async function searchInTable(
-  supabase: ReturnType<typeof createClient> extends Promise<infer T> ? T : never,
-  table: string,
-  columns: string[],
-  query: string,
-  projectIdField: string,
-  selectExtra: string,
-  limit: number
-): Promise<SearchResult[]> {
-  const searchConditions = columns
-    .map((col) => `${col}.ilike.%${query}%`)
-    .join(',');
-
-  const { data } = await supabase
-    .from(table)
-    .select(`id, title, description, ${projectIdField}, updated_at ${selectExtra}`)
-    .is('deleted_at', null)
-    .or(searchConditions)
-    .limit(limit)
-    .order('updated_at', { ascending: false });
-
-  const rows = (data ?? []) as unknown as Record<string, unknown>[];
-  return rows.map((row) => ({
-    id: row.id as string,
-    type: table === 'projects' ? 'project' : table === 'requirements' ? 'requirement' : 'specification',
-    title: row.title as string,
-    description: row.description as string | null,
-    project_id: table === 'projects' ? (row.id as string) : (row[projectIdField] as string),
-    project_name: null,
-    url: '',
-    updated_at: row.updated_at as string,
-    match_rank: 0,
-  }));
-}
-
 export async function GET(request: NextRequest) {
   const user = await getUser();
   const guest = await isGuest();
