@@ -70,3 +70,10 @@ public/
 presentation/
 ch-3/
 report.md
+
+# build artifacts
+build-check.sh
+*.log
+
+# plans
+.claude/plans/
