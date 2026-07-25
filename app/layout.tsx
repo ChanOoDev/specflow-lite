@@ -12,6 +12,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'SpecFlow Lite',
   description: 'Lightweight spec-driven development assistant',
+  icons: { icon: '/favicon.svg' },
 };
 
 export default function RootLayout({
