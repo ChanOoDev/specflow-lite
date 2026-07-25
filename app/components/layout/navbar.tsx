@@ -4,6 +4,7 @@ import { NavLink, Stack } from '@mantine/core';
 import {
   IconLayoutDashboard,
   IconFolders,
+  IconSearch,
   IconInfoCircle,
 } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
 ];
 
 const META_ITEMS = [
+  { label: 'Search', href: '/search', icon: IconSearch },
   { label: 'Project Info', href: '/project-info', icon: IconInfoCircle },
 ];
 

@@ -79,7 +79,7 @@ Requirement → Specification → Plan → Tasks → Implement → Review → Te
 git clone https://github.com/ChanOoDev/specflow-lite.git
 cd specflow-lite
 npm install
-cp .env.example .env.local   # add your Supabase + GitHub OAuth keys
+cp .env.local.example .env.local   # add your Supabase + GoatCounter keys
 npm run dev
 ```
 

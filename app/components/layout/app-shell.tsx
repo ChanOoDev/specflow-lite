@@ -19,6 +19,7 @@ import {
   IconSun,
   IconHome,
   IconUser,
+  IconSearch,
 } from '@tabler/icons-react';
 import { useMantineColorScheme } from '@mantine/core';
 import { Navbar } from './navbar';
@@ -246,7 +247,19 @@ export function AppShellLayout({ children }: { children: React.ReactNode }) {
             </Title>
             <AppBreadcrumbs />
           </Group>
-          <UserMenu />
+          <Group gap="xs">
+            <ActionIcon
+              variant="subtle"
+              radius="xl"
+              size="lg"
+              component={Link}
+              href="/search"
+              aria-label="Search"
+            >
+              <IconSearch size={20} stroke={1.5} />
+            </ActionIcon>
+            <UserMenu />
+          </Group>
         </Group>
       </AppShell.Header>
 

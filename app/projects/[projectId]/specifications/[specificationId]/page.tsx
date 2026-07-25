@@ -19,8 +19,9 @@ import { useDeleteSpecification } from '@/lib/hooks/use-specification-mutations'
 import { useProject } from '@/lib/hooks/use-project';
 import { SpecificationDetail } from '@/app/components/specifications/specification-detail';
 import { SpecificationDeleteConfirm } from '@/app/components/specifications/specification-delete-confirm';
+import { SpecExportPdf } from '@/app/components/specifications/spec-export-pdf';
 import { TaskList } from '@/app/components/tasks/task-list';
-import { Suspense, useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import Link from 'next/link';
 
 function SpecificationDetailPageContent() {
@@ -38,6 +39,7 @@ function SpecificationDetailPageContent() {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const isArchived = project?.status === 'archived';
+  const specContentRef = useRef<HTMLDivElement>(null);
 
   if (isLoading) {
     return (
@@ -94,6 +96,10 @@ function SpecificationDetailPageContent() {
 
           {!isArchived && (
             <Group>
+              <SpecExportPdf
+                specRef={specContentRef}
+                title={specification.title}
+              />
               <Button
                 variant="subtle"
                 leftSection={<IconEdit size={18} />}
@@ -117,7 +123,9 @@ function SpecificationDetailPageContent() {
           )}
         </Group>
 
-        <SpecificationDetail specification={specification} projectId={projectId} />
+        <div ref={specContentRef}>
+          <SpecificationDetail specification={specification} projectId={projectId} />
+        </div>
 
         <Divider />
 
